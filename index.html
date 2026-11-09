@@ -442,6 +442,33 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   .grid2{grid-template-columns:1fr}
   .stat h4{font-size:14px}
 }
+
+/* reunião: pauta, decisões, encaminhamentos, ata */
+.ag-item{background:var(--panel);border-radius:16px;padding:10px 14px;margin:8px 0}
+.ag-h{display:flex;align-items:center;gap:10px}
+.ag-n{width:22px;height:22px;border-radius:50%;background:#161616;color:#fff;font-size:12px;display:grid;place-items:center;flex:none}
+.ag-topic{flex:1;min-width:0;border:0;background:transparent;font-weight:600;font-size:15px;outline:none;font-family:inherit;color:var(--text)}
+.ag-notes{display:block;width:100%;border:0;background:transparent;resize:vertical;min-height:64px;font-family:inherit;font-size:14px;line-height:1.5;outline:none;margin-top:6px;color:var(--text)}
+.dec-row{display:flex;gap:8px;align-items:center;border-left:3px solid var(--done);background:#f2f9f4;border-radius:0 12px 12px 0;margin:6px 0;padding:2px 6px 2px 12px}
+.dec-row input{flex:1;min-width:0;border:0;background:transparent;padding:7px 0;font-family:inherit;font-size:14px;outline:none;color:var(--text)}
+.x{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:4px 7px;border-radius:8px;font-size:13px;line-height:1}
+.x:hover{background:rgba(0,0,0,.06);color:var(--text)}
+.enc-row{display:grid;grid-template-columns:20px minmax(0,1fr) 140px 120px auto auto auto;gap:2px 6px;align-items:center;background:var(--panel);border-radius:14px;padding:6px 10px;margin:6px 0}.enc-row .enc-t{grid-column:2/-1;font-weight:500}.enc-row .enc-o,.enc-row .enc-d,.enc-row .enc-s,.enc-row .ata-tog,.enc-row .x{grid-row:2}.enc-row .enc-o{grid-column:2;color:var(--muted)}.enc-row .ata-tog{justify-self:start}.enc-row .enc-d{grid-column:3}.enc-row .enc-s{grid-column:4}.enc-row .ata-tog{grid-column:5}.enc-row [data-act=t-open]{grid-column:6}.enc-row [data-act=t-del]{grid-column:7}
+.enc-row input:not([type=checkbox]),.enc-row select{border:1px solid transparent;background:transparent;border-radius:8px;padding:5px 6px;font-family:inherit;font-size:14px;min-width:0;width:100%;outline:none;color:var(--text)}
+.enc-row input:not([type=checkbox]):hover,.enc-row select:hover,.enc-row input:focus{border-color:var(--line)}
+.enc-row.done .enc-t{text-decoration:line-through;color:var(--muted)}
+.ata-tog{font-size:12px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;white-space:nowrap;color:var(--text)}
+.ata-tog.off{background:#efe8dc;color:var(--muted);border-color:transparent}
+.mt-tools{display:flex;gap:8px;flex-wrap:wrap}
+h2.sec.wrapok{flex-wrap:wrap;gap:8px}
+textarea.notes.ata{min-height:460px;line-height:1.55;font-size:14px}
+.mt-field{display:flex;align-items:center;gap:10px;margin:12px 0;font-size:14px}
+.mt-field label{color:var(--muted);width:92px;flex:none}
+.mt-field input{flex:1;min-width:0;border:1px solid #d9cfbf;border-radius:999px;padding:7px 12px;background:var(--panel);font-family:inherit;font-size:14px;outline:none}
+.mt-when{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.mt-when input{border:1px solid #d9cfbf;border-radius:999px;padding:3px 8px;font-size:13px;background:var(--panel);font-family:inherit}
+details.mt-tr summary{cursor:pointer;color:var(--muted);font-size:14px;margin:30px 0 10px}
+@media(max-width:760px){.enc-row{grid-template-columns:20px minmax(0,1fr) minmax(0,1fr) auto auto;row-gap:2px}.enc-row .enc-t{grid-column:2/-1}.enc-row .enc-o{grid-column:2/3;grid-row:2}.enc-row .enc-d{grid-column:3/-1;grid-row:2}.enc-row .enc-s{grid-column:2/3;grid-row:3}.enc-row .ata-tog{grid-column:3/4;grid-row:3;justify-self:start}.enc-row [data-act=t-open]{grid-column:4;grid-row:3}.enc-row [data-act=t-del]{grid-column:5;grid-row:3}}
 </style>
 </head>
 <body>
@@ -1058,27 +1085,67 @@ function newMeeting(){
   const m={id:uid(),title:'Nova reunião',date:today(),spaceId:db.spaces[0].id,projectId:null,participants:[],summary:'',decisions:[],transcript:'',createdAt:Date.now()};
   db.meetings.push(m);save();go('#/meeting/'+m.id);
 }
+function mFmtDate(d){if(!d)return '';const[y,mo,da]=d.split('-');return `${da}/${mo}/${y}`}
+function mHora(t){if(!t)return '';const[h,mi]=t.split(':');return h+'h'+(mi&&mi!=='00'?mi:'')}
+function ataText(m){
+  const ts=db.tasks.filter(t=>t.source===m.id&&!t.private).sort(taskSort);
+  const L=['ATA DE REUNIÃO',m.title||'',''];
+  L.push('Data: '+mFmtDate(m.date)+(m.start?`  ·  Horário: ${mHora(m.start)}${m.end?' às '+mHora(m.end):''}`:''));
+  if(m.place)L.push('Local: '+m.place);
+  if(m.participants?.length)L.push('Participantes: '+m.participants.join(', '));
+  L.push('');
+  const ag=(m.agenda||[]).filter(a=>(a.topic||'').trim());
+  if(ag.length){
+    L.push('PAUTA');ag.forEach((a,i)=>L.push(`${i+1}. ${a.topic.trim()}`));L.push('');
+    L.push('DISCUSSÃO');
+    ag.forEach((a,i)=>{L.push(`${i+1}. ${a.topic.trim()}`);(a.notes||'').split('\n').map(x=>x.trim().replace(/^[-•·]\s*/,'')).filter(Boolean).forEach(x=>L.push('   • '+x));L.push('')});
+  }
+  const dec=(m.decisions||[]).map(d=>(d||'').trim()).filter(Boolean);
+  if(dec.length){L.push('DELIBERAÇÕES');dec.forEach((d,i)=>L.push(`${i+1}. ${d}`));L.push('')}
+  if(ts.length){L.push('ENCAMINHAMENTOS');ts.forEach((t,i)=>L.push(`${i+1}. ${t.title.replace(/\.$/,'')}. Responsável: ${!t.owner||t.owner==='Juju'?'Ana Júlia':t.owner}${t.due?'. Prazo: '+mFmtDate(t.due):''}.`));L.push('')}
+  if(m.next)L.push('Próxima reunião: '+m.next);
+  return L.join('\n').replace(/\n{3,}/g,'\n\n').trim();
+}
 function viewMeeting(m){
   const ts=db.tasks.filter(t=>t.source===m.id).sort(taskSort);
-  return `<div class="wrap">
-    <div class="meta"><a href="#/meetings">🎙️ Reuniões</a></div>
+  const ag=m.agenda||[], dec=m.decisions||[];
+  const people=[...new Set([...(m.participants||[]),...db.tasks.map(t=>t.owner).filter(Boolean)])];
+  return `<div class="wrap mt">
+    <div class="meta"><a href="#/meetings">Reuniões</a></div>
     <h1 class="title" contenteditable="true" id="mtitle">${esc(m.title)}</h1>
-    <div class="meta">
-      <input type="date" id="mdate" value="${m.date||''}" style="border:1px solid var(--line);border-radius:6px;padding:2px 6px;font-size:13px">
+    <div class="meta mt-when">
+      <input type="date" id="mdate" value="${m.date||''}">
+      <input type="time" id="mstart" value="${m.start||''}" title="Início"> <span>às</span> <input type="time" id="mend" value="${m.end||''}" title="Fim">
       <select id="mproj"><option value="">Sem projeto</option>${projects().map(p=>`<option value="${p.id}" ${m.projectId===p.id?'selected':''}>${esc(p.title||'Sem título')}</option>`).join('')}</select>
-      ${m.participants?.length?`<span>👥 ${esc(m.participants.join(', '))}</span>`:''}
       ${m.link?`<a href="${esc(m.link)}" target="_blank" style="color:var(--accent)">Abrir no Wispr ↗</a>`:''}
-      <button class="btn ghost danger" onclick="if(confirm('Apagar reunião?')){db.meetings=db.meetings.filter(x=>x.id!=='${m.id}');save();go('#/meetings')}">Apagar</button>
+      <button class="btn ghost danger" data-act="m-del">Apagar</button>
     </div>
-    <h2 class="sec">Resumo</h2>
-    <div class="mt-sum txt" contenteditable="true" id="msum" style="outline:none;min-height:40px" data-ph="Escreva ou cole o resumo">${esc(m.summary)}</div>
-    <h2 class="sec">Decisões</h2>
-    ${(m.decisions||[]).map(d=>`<div class="decision">${esc(d)}</div>`).join('')||'<div class="empty">Nenhuma decisão registrada.</div>'}
-    <h2 class="sec">Tarefas</h2>
-    <div class="task-add"><input id="mtask" placeholder="Nova tarefa desta reunião... (Enter)"></div>
-    ${taskTable(ts)}
-    <h2 class="sec">Transcrição</h2>
-    <textarea class="notes" id="mtr" placeholder="Cole aqui a transcrição">${esc(m.transcript||'')}</textarea>
+    <div class="mt-field"><label>Participantes</label><input id="mpart" value="${esc((m.participants||[]).join(', '))}" placeholder="Nomes separados por vírgula"></div>
+    <div class="mt-field"><label>Local</label><input id="mplace" value="${esc(m.place||'')}" placeholder="Ex.: sede SV, online"></div>
+    <h2 class="sec wrapok">Pauta <button class="btn ghost" data-act="ag-add">+ Tema</button></h2>
+    ${ag.map((a,i)=>`<div class="ag-item" data-i="${i}"><div class="ag-h"><span class="ag-n">${i+1}</span><input class="ag-topic" data-f="topic" value="${esc(a.topic||'')}" placeholder="Tema da pauta"><button class="x" data-act="ag-del" title="Remover tema">✕</button></div><textarea class="ag-notes" data-f="notes" placeholder="O que foi discutido, um ponto por linha">${esc(a.notes||'')}</textarea></div>`).join('')||'<div class="empty">Sem pauta ainda.</div>'}
+    <h2 class="sec wrapok">Decisões <button class="btn ghost" data-act="dec-add">+ Decisão</button></h2>
+    ${dec.map((d,i)=>`<div class="dec-row" data-i="${i}"><input value="${esc(d)}" placeholder="Decisão"><button class="x" data-act="dec-del" title="Remover">✕</button></div>`).join('')||'<div class="empty">Nenhuma decisão registrada.</div>'}
+    <h2 class="sec">Encaminhamentos</h2>
+    <div class="task-add"><input id="mtask" placeholder="Nova tarefa desta reunião... (Enter)  dica: !alta, @20/11"></div>
+    <datalist id="mpeople">${people.map(p=>`<option value="${esc(p)}">`).join('')}</datalist>
+    ${ts.map(t=>`<div class="enc-row ${t.status}" data-id="${t.id}">
+      <input type="checkbox" ${t.status==='done'?'checked':''} data-act="t-done" title="Concluir">
+      <input class="enc-t" data-f="title" value="${esc(t.title)}">
+      <input class="enc-o" data-f="owner" list="mpeople" value="${esc(t.owner||'')}" placeholder="Responsável">
+      <input class="enc-d" type="date" data-f="due" value="${t.due||''}">
+      <select class="enc-s" data-f="status">${Object.entries(statusLbl).map(([k,v])=>`<option value="${k}" ${t.status===k?'selected':''}>${v}</option>`).join('')}</select>
+      <button class="ata-tog ${t.private?'off':''}" data-act="t-priv" title="Entra ou não na ata">${t.private?'Fora da ata':'Na ata'}</button>
+      <button class="x" data-act="t-open" title="Mais detalhes">•••</button>
+      <button class="x" data-act="t-del" title="Apagar tarefa">✕</button>
+    </div>`).join('')||'<div class="empty">Nenhuma tarefa.</div>'}
+    <h2 class="sec wrapok">Ata <span class="mt-tools"><button class="btn ghost" data-act="ata-regen">Refazer</button><button class="btn" data-act="ata-copy">Copiar</button><button class="btn primary" data-act="ata-mail">Enviar por e-mail</button></span></h2>
+    <div class="meta" id="atahint">${m.ata?'Você editou o texto, então ele não muda mais sozinho. Use Refazer pra montar de novo a partir da reunião.':'Montada a partir da pauta, decisões e encaminhamentos. Atualiza sozinha; se editar o texto, ele fica como você deixou.'}</div>
+    <textarea class="notes ata" id="mata">${esc(m.ata||ataText(m))}</textarea>
+    <h2 class="sec">Notas só suas</h2>
+    <div class="meta">Não entram na ata.</div>
+    <div class="mt-sum txt" contenteditable="true" id="msum" style="outline:none;min-height:40px" data-ph="Escreva ou cole o resumo">${esc(m.summary||'')}</div>
+    <details class="mt-tr"><summary>Transcrição</summary><textarea class="notes" id="mtr" placeholder="Cole aqui a transcrição">${esc(m.transcript||'')}</textarea></details>
   </div>`;
 }
 
@@ -1414,11 +1481,37 @@ function afterRender(r,id){
     });
   }
   if(r==='meeting'){
-    const m=db.meetings.find(x=>x.id===id);
-    const up=()=>{m.title=$('#mtitle').innerText.trim();m.date=$('#mdate').value;m.projectId=$('#mproj').value||null;m.summary=$('#msum').innerText;m.transcript=$('#mtr').value;save()};
-    ['#mtitle','#msum','#mtr','#mdate','#mproj'].forEach(s=>{$(s).addEventListener('input',up);$(s).addEventListener('change',up)});
-    const mt=$('#mtask');mt.addEventListener('keydown',e=>{if(e.key==='Enter'&&mt.value.trim()){const q=parseQuick(mt.value);db.tasks.push({id:uid(),status:'todo',projectId:m.projectId,spaceId:m.projectId?page(m.projectId).spaceId:m.spaceId,notes:'',source:m.id,createdAt:Date.now(),...q});save();render();$('#mtask').focus()}});
+    const m=db.meetings.find(x=>x.id===id); const W=$('.wrap.mt'); if(!m||!W)return;
+    const refreshAta=()=>{if(!m.ata){const a=$('#mata');if(a)a.value=ataText(m)}};
+    const up=()=>{m.title=$('#mtitle').innerText.trim();m.date=$('#mdate').value;m.start=$('#mstart').value;m.end=$('#mend').value;m.projectId=$('#mproj').value||null;m.participants=$('#mpart').value.split(',').map(x=>x.trim()).filter(Boolean);m.place=$('#mplace').value.trim();m.summary=$('#msum').innerText;m.transcript=$('#mtr').value;save();refreshAta()};
+    ['#mtitle','#msum','#mtr','#mdate','#mstart','#mend','#mproj','#mpart','#mplace'].forEach(s=>{$(s).addEventListener('input',up);$(s).addEventListener('change',up)});
+    W.addEventListener('input',e=>{
+      const el=e.target;
+      const ai=el.closest('.ag-item'); if(ai&&el.dataset.f){m.agenda[+ai.dataset.i][el.dataset.f]=el.value;save();refreshAta();return}
+      const dr=el.closest('.dec-row'); if(dr&&el.tagName==='INPUT'){m.decisions[+dr.dataset.i]=el.value;save();refreshAta();return}
+      const er=el.closest('.enc-row'); if(er&&el.dataset.f){const t=db.tasks.find(x=>x.id===er.dataset.id);if(!t)return;t[el.dataset.f]=el.value;if(el.dataset.f==='status'){if(t.status==='done')t.doneAt=Date.now();er.className='enc-row '+t.status;er.querySelector('[data-act=t-done]').checked=t.status==='done'}save();refreshAta();return}
+      if(el.id==='mata'){m.ata=el.value;$('#atahint').textContent='Você editou o texto, então ele não muda mais sozinho. Use Refazer pra montar de novo a partir da reunião.';save()}
+    });
+    W.addEventListener('click',e=>{
+      const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+      const i=+(b.closest('[data-i]')?.dataset.i);const er=b.closest('.enc-row');const t=er?db.tasks.find(x=>x.id===er.dataset.id):null;
+      const focusLast=sel=>{const l=$$(sel);if(l.length)l[l.length-1].focus()};
+      if(a==='m-del'){if(confirm('Apagar reunião?')){db.meetings=db.meetings.filter(x=>x.id!==m.id);save();go('#/meetings')}}
+      else if(a==='ag-add'){m.agenda=m.agenda||[];m.agenda.push({topic:'',notes:''});save();render();focusLast('.ag-topic')}
+      else if(a==='ag-del'){if((m.agenda[i].topic||m.agenda[i].notes)&&!confirm('Remover este tema da pauta?'))return;m.agenda.splice(i,1);save();render()}
+      else if(a==='dec-add'){m.decisions=m.decisions||[];m.decisions.push('');save();render();focusLast('.dec-row input')}
+      else if(a==='dec-del'){m.decisions.splice(i,1);save();render()}
+      else if(a==='t-done'&&t){t.status=t.status==='done'?'todo':'done';if(t.status==='done')t.doneAt=Date.now();save();render()}
+      else if(a==='t-priv'&&t){t.private=!t.private;save();render()}
+      else if(a==='t-open'&&t){openTask(t.id)}
+      else if(a==='t-del'&&t){if(confirm('Apagar tarefa?')){db.tasks=db.tasks.filter(x=>x!==t);save();render()}}
+      else if(a==='ata-regen'){if(m.ata&&!confirm('Refazer a ata descarta o que você editou no texto. Continuar?'))return;m.ata='';save();render()}
+      else if(a==='ata-copy'){const v=$('#mata').value;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast('Ata copiada')).catch(()=>{$('#mata').select();document.execCommand('copy');toast('Ata copiada')})}
+      else if(a==='ata-mail'){location.href='mailto:?subject='+encodeURIComponent('Ata · '+m.title+' · '+mFmtDate(m.date))+'&body='+encodeURIComponent($('#mata').value)}
+    });
+    const mt=$('#mtask');mt.addEventListener('keydown',e=>{if(e.key==='Enter'&&mt.value.trim()){const q=parseQuick(mt.value);db.tasks.push({id:uid(),status:'todo',owner:'Juju',projectId:m.projectId,spaceId:m.projectId?page(m.projectId).spaceId:m.spaceId,notes:'',source:m.id,createdAt:Date.now(),...q});save();render();$('#mtask').focus()}});
   }
+
 }
 
 render();
