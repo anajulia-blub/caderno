@@ -489,7 +489,7 @@ const saveUI=()=>{try{localStorage.setItem('caderno.ui',JSON.stringify(ui))}catc
 
 /* ============ sync com GitHub ============ */
 let sha=null, saveTimer=null, dirty=false, syncing=false;
-function setSync(state,msg){const el=$('#sync');if(!el)return;el.className=state;el.querySelector('span').textContent=msg}
+function setSync(state,msg){const el=$('#sync');if(!el)return;el.className=state;el.querySelector('span:last-child').textContent=msg}
 function b64enc(str){const bytes=new TextEncoder().encode(str);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin)}
 function b64dec(b64){const bin=atob(b64.replace(/\n/g,''));const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));return new TextDecoder().decode(bytes)}
 const ghOn=()=>cfg.owner&&cfg.repo&&cfg.token;
