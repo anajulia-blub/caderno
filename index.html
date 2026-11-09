@@ -276,6 +276,9 @@ table.tasks tr:hover td{background:#e8e0d2}
 .caminho .src{font-size:12px;color:var(--muted)}
 .caminho .src a{text-decoration:underline}
 /* ===== polimento v3 ===== */
+.connect-warn{display:flex;gap:16px;align-items:center;justify-content:space-between;background:var(--yellow);border-radius:20px;padding:14px 18px;margin:16px 32px 0;font-size:14px;line-height:1.45}
+.connect-warn .pillbtn{flex-shrink:0}
+@media (max-width:820px){.connect-warn{flex-direction:column;align-items:flex-start;margin:12px 16px 0}}
 .ev .em{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal.week .ev .em+.em{display:none}
 .cal.week .ev.gcal .em{font-size:11px}
@@ -607,7 +610,8 @@ function render(){
   else if(r==='meeting'&&db.meetings.find(m=>m.id===id))html=viewMeeting(db.meetings.find(m=>m.id===id));
   else if(r==='settings')html=viewSettings();
   else html=viewHome();
-  main.innerHTML=top+html; main.scrollTop=0;
+  const warn=!ghOn()&&r!=='settings'?`<div class="connect-warn"><div><b>Este aparelho ainda não está ligado ao seu Caderno.</b><br>O que aparece aqui são só páginas de exemplo. Suas tarefas e sua agenda estão salvas no GitHub: é só conectar uma vez.</div><button class="pillbtn" onclick="go('#/settings')">Conectar este aparelho</button></div>`:'';
+  main.innerHTML=top+warn+html; main.scrollTop=0;
   $('#side').classList.remove('open');
   afterRender(r,id);
 }
@@ -1078,8 +1082,9 @@ function viewSettings(){
   return `<div class="wrap set">
     <h1 class="title">Configurações</h1>
     <h2 class="sec">Sincronizar com o GitHub</h2>
+    ${ghOn()?'':'<div class="connect-warn" style="margin:0 0 14px"><div><b>Falta só colar o seu token</b> no campo abaixo e clicar em Conectar. Usuário e repositório já estão preenchidos.</div></div>'}
     <div class="note">Seus dados ficam num arquivo <b>data.json</b> no seu repositório privado. Assim o caderno é o mesmo no computador e no celular, e cada alteração fica no histórico do GitHub. O token fica salvo só neste navegador; em cada aparelho novo, cole de novo.</div>
-    <label>Seu usuário no GitHub</label><input id="cowner" value="${esc(cfg.owner||'')}" placeholder="ex.: jujucastro">
+    <label>Seu usuário no GitHub</label><input id="cowner" value="${esc(cfg.owner||'anajulia-blub')}">
     <label>Repositório dos dados</label><input id="crepo" value="${esc(cfg.repo||'caderno-dados')}">
     <label>Token</label><input id="ctoken" type="password" value="${esc(cfg.token||'')}" placeholder="github_pat_...">
     <div style="margin-top:16px;display:flex;gap:8px">
