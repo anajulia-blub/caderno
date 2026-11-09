@@ -276,6 +276,55 @@ table.tasks tr:hover td{background:#e8e0d2}
 .caminho .src{font-size:12px;color:var(--muted)}
 .caminho .src a{text-decoration:underline}
 /* ===== polimento v3 ===== */
+.st-item{position:relative}
+.st-item .open{position:absolute;right:8px;top:8px;border:0;background:var(--card);border-radius:999px;font-size:11px;padding:2px 8px;opacity:0}
+.st-item:hover .open{opacity:1}
+.st-item.sel{outline:2px solid #161616;background:#fff}
+.pick-banner{background:#161616;color:#fff;border-radius:18px;padding:10px 12px 10px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;position:sticky;top:8px;z-index:6}
+@media (max-width:820px){.st-item .open{opacity:1}}
+.pagewrap{max-width:980px}
+.crumbs{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin:4px 0 14px}
+.crumbs a:hover{text-decoration:underline}
+.phead{display:flex;align-items:center;gap:14px}
+.phead .page-icon{font-size:38px;width:62px;height:62px;display:grid;place-items:center;background:var(--panel);border-radius:18px;flex-shrink:0}
+.phead h1.title{margin:0;font-size:40px}
+.props{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 24px}
+.props .sp{flex:1}
+.prop{display:flex;flex-direction:column;background:var(--panel);border-radius:14px;padding:6px 12px;min-width:90px}
+.prop small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.prop b{font-size:14px;font-weight:500}
+.prop select{border:0!important;background:transparent!important;padding:0!important;font-size:14px;font-weight:500;border-radius:0!important;cursor:pointer}
+.pillbtn.danger{color:#b33a3a}
+.psum{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px}
+.psum .stat:hover{transform:none}
+.bar{height:8px;background:rgba(255,255,255,.55);border-radius:99px;margin:8px 0 6px;overflow:hidden}.bar i{display:block;height:100%;background:#161616;border-radius:99px}
+.doc{background:var(--panel);border-radius:var(--radius);padding:26px 34px 18px 44px}
+.doc .block .txt{font-size:15.5px;line-height:1.7}
+.doc .block.h1 .txt{font-size:28px;letter-spacing:-.02em}
+.doc .block.h2 .txt{font-size:21px;letter-spacing:-.01em}
+.doc .block.callout{background:var(--card);border-radius:14px}
+.doc .block.quote .txt{border-left-color:var(--pink);border-left-width:4px}
+.addline{cursor:text;padding:10px 0 4px;color:#c2b8a8}
+.addline:hover{color:var(--muted)}
+h2.sec{font-size:19px;letter-spacing:-.01em;margin:34px 0 12px}
+h2.sec .h3l{display:flex;gap:8px;align-items:center}
+h2.sec .c{font-size:13px;font-weight:500;color:var(--muted)}
+.donebox{margin-top:10px}.donebox summary{cursor:pointer;color:var(--muted);font-size:14px;padding:6px 2px}
+.kids{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.kid{background:var(--panel);border-radius:16px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:box-shadow .12s}
+.kid:hover{box-shadow:0 4px 14px rgba(60,40,10,.08)}
+.kid .ki{font-size:22px}.kid small{color:var(--muted)}
+.kid.add{border:1.5px dashed #d6ccbb;background:transparent;color:var(--muted);justify-content:center;align-items:center;flex-direction:row}
+.bbar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.swatch{width:30px;height:30px;border-radius:50%;border:2px solid var(--bg);box-shadow:0 0 0 1px #d6ccbb;cursor:pointer}
+.swatch:hover{transform:scale(1.08)}
+.canvas{border-radius:var(--radius);border:0;background-color:var(--panel)}
+.sticky{border-radius:14px}
+#menu{border-radius:16px;border-color:var(--line);background:var(--panel)}
+#menu .mi{border-radius:10px}
+#search .sb{border-radius:22px;background:var(--panel)}
+#search input{background:var(--panel)}
+@media (max-width:820px){.psum{grid-template-columns:1fr}.doc{padding:18px 16px 14px 18px}.phead h1.title{font-size:30px}.phead .page-icon{width:50px;height:50px;font-size:30px}}
 .pill.date.today{background:transparent;border:1.5px solid #161616;color:#161616;padding:1px 8px}
 .cal.week .ev .et input{display:none}
 .cal.week .ev{padding:6px 7px}
@@ -598,10 +647,10 @@ function toggleExp(id){ui.expanded[id]=!ui.expanded[id];saveUI();renderSide()}
 function newMenu(e,spaceId){
   e.stopPropagation();
   showMenu(e.target.getBoundingClientRect(),[
-    {k:'📄',l:'Página',f:()=>newPage(spaceId,'page')},
-    {k:'📁',l:'Projeto',f:()=>newPage(spaceId,'project')},
-    {k:'🔁',l:'Processo',f:()=>newPage(spaceId,'process')},
-    {k:'💡',l:'Brainstorm',f:()=>newPage(spaceId,'board')}]);
+    {k:I('book','sm'),l:'Página',f:()=>newPage(spaceId,'page')},
+    {k:I('target','sm'),l:'Projeto',f:()=>newPage(spaceId,'project')},
+    {k:I('tasks','sm'),l:'Processo',f:()=>newPage(spaceId,'process')},
+    {k:I('spark','sm'),l:'Brainstorm',f:()=>newPage(spaceId,'board')}]);
 }
 
 /* ============ menu genérico ============ */
@@ -682,41 +731,50 @@ function regToTask(id){const i=db.inbox.find(x=>x.id===id);const t={id:uid(),tit
 
 /* ============ página ============ */
 function viewPage(p){
-  const sp=space(p.spaceId);
+  const sp=space(p.spaceId);const t=today();
   const crumbs=[];let c=p;while(c.parentId){c=page(c.parentId);if(!c)break;crumbs.unshift(`<a href="#/page/${c.id}">${esc(c.title||'Sem título')}</a>`)}
-  let extra='';
+  let summary='',extra='';
   if(p.type==='project'){
-    const ts=db.tasks.filter(t=>t.projectId===p.id);
-    const done=ts.filter(t=>t.status==='done').length;
+    const ts=db.tasks.filter(x=>x.projectId===p.id);
+    const done=ts.filter(x=>x.status==='done').length;const openT=ts.filter(x=>x.status!=='done');
+    const late=openT.filter(x=>x.due&&x.due<t).length;const pct=ts.length?Math.round(done/ts.length*100):0;
+    const nextT=openT.filter(x=>x.due).sort(taskSort)[0];
     const mts=db.meetings.filter(m=>m.projectId===p.id);
-    extra=`<h2 class="sec"><span>Tarefas <span class="pill">${done}/${ts.length}</span></span></h2>
-      <div class="task-add"><input id="ptask" placeholder="Nova tarefa do projeto... (Enter)"></div>
-      ${taskTable(ts.sort(taskSort))}
-      <h2 class="sec">Reuniões</h2>
-      ${mts.map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span>🎙️</span><span class="grow">${esc(m.title)}</span><span class="pill">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ligada a este projeto.</div>'}`;
+    summary=`<div class="psum">
+      <div class="stat" style="background:var(--pink);cursor:default"><h4>Progresso</h4><b>${pct}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${done} de ${ts.length} tarefas feitas</small></div>
+      <div class="stat" style="background:${late?'var(--yellow)':'var(--green)'};cursor:default"><h4>Abertas</h4><b>${openT.length}</b><small>${late?late+' atrasadas':'nenhuma atrasada'}</small></div>
+      <div class="stat dark" style="cursor:default"><h4>Próximo prazo</h4>${nextT?`<div class="nx">${fmtDate(nextT.due)} · ${esc(nextT.title)}</div>`:'<div class="nx">Sem prazos marcados</div>'}</div>
+    </div>`;
+    extra=`<h2 class="sec"><span class="h3l">${I('tasks')} Tarefas</span><span class="c">${openT.length} abertas</span></h2>
+      <div class="task-add"><input id="ptask" placeholder="Nova tarefa do projeto e Enter  (!urgente, @amanhã)"></div>
+      ${taskTable(openT.sort(taskSort))}
+      ${done?`<details class="donebox"><summary>${done} feitas</summary>${taskTable(ts.filter(x=>x.status==='done'))}</details>`:''}
+      <h2 class="sec"><span class="h3l">${I('mic')} Reuniões</span></h2>
+      ${mts.map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span class="grow">${esc(m.title)}</span><span class="pill date">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ligada a este projeto ainda.</div>'}`;
   }
   const kids=db.pages.filter(k=>k.parentId===p.id);
-  const kidsHtml=kids.length?`<h2 class="sec">Subpáginas</h2>${kids.map(k=>`<div class="row" onclick="go('#/page/${k.id}')"><span>${k.icon||'📄'}</span><span class="grow">${esc(k.title||'Sem título')}</span></div>`).join('')}`:'';
+  const kidsHtml=kids.length?`<h2 class="sec"><span class="h3l">${I('book')} Subpáginas</span></h2><div class="kids">${kids.map(k=>`<div class="kid" onclick="go('#/page/${k.id}')"><span class="ki">${k.icon||'📄'}</span><span>${esc(k.title||'Sem título')}</span><small>${typeLbl[k.type]}</small></div>`).join('')}<div class="kid add" onclick="newPage('${p.spaceId}','page','${p.id}')">${I('plus')}<span>Nova subpágina</span></div></div>`:'';
   const body=p.type==='board'
-    ?`<div style="display:flex;gap:8px;margin-bottom:10px">${['yellow','pink','blue','green','orange','white'].map(c=>`<button class="btn" onclick="addSticky('${c}')"><span class="c-${c}" style="display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px"></span></button>`).join('')}<span class="hint" style="margin-left:6px;align-self:center">Clique numa cor para criar um post-it. Arraste pela barra de cima.</span></div><div class="canvas" id="canvas"></div>`
-    :`<div class="blocks" id="blocks"></div><div class="hint">Digite / para inserir blocos</div>`;
-  return `<div class="wrap ${p.type==='board'?'wide':''}">
-    <div class="meta">${sp?sp.icon+' '+esc(sp.name):''}${crumbs.length?' / '+crumbs.join(' / '):''}</div>
-    <span class="page-icon" onclick="pickIcon('${p.id}',this)">${p.icon||'📄'}</span>
-    <h1 class="title" contenteditable="true" data-ph="Sem título" id="ptitle">${esc(p.title)}</h1>
-    <div class="meta">
-      <span class="pill">${typeLbl[p.type]}</span>
-      <select onchange="movePage('${p.id}',this.value)">${db.spaces.map(s=>`<option value="${s.id}" ${s.id===p.spaceId?'selected':''}>${s.icon} ${esc(s.name)}</option>`).join('')}</select>
-      ${p.type==='project'?`<select onchange="page('${p.id}').status=this.value;save();renderSide()">${['ativo','pausado','concluído','arquivado'].map(s=>`<option ${p.status===s?'selected':''}>${s}</option>`).join('')}</select>`:''}
-      <span>Editado ${new Date(p.updatedAt).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</span>
-      <button class="btn ghost" onclick="newPage('${p.spaceId}','page','${p.id}')">+ Subpágina</button>
-      <button class="btn ghost danger" onclick="if(confirm('Apagar esta página e as subpáginas?')){deletePage('${p.id}');save();go('#/home')}">Apagar</button>
+    ?`<div class="bbar">${['yellow','pink','blue','green','orange','white'].map(c=>`<button class="swatch c-${c}" title="Novo post-it" onclick="addSticky('${c}')"></button>`).join('')}<span class="hint">Escolha uma cor pra criar um post-it. Arraste pela faixa de cima. O ✅ transforma a ideia em tarefa.</span></div><div class="canvas" id="canvas"></div>`
+    :`<div class="doc"><div class="blocks" id="blocks"></div><div class="hint addline">+ Clique aqui pra continuar escrevendo · digite / pra inserir blocos</div></div>`;
+  return `<div class="wrap ${p.type==='board'?'wide':''} pagewrap">
+    <div class="crumbs"><span class="sp-tag"><i style="background:${spaceColor(p.spaceId)}"></i>${esc(sp?.name||'')}</span>${crumbs.map(x=>'<span>/</span>'+x).join('')}</div>
+    <div class="phead"><span class="page-icon" title="Trocar ícone" onclick="pickIcon('${p.id}',this)">${p.icon||'📄'}</span>
+    <h1 class="title" contenteditable="true" data-ph="Sem título" id="ptitle">${esc(p.title)}</h1></div>
+    <div class="props">
+      <span class="prop"><small>Tipo</small><b>${typeLbl[p.type]}</b></span>
+      <label class="prop"><small>Frente</small><select onchange="movePage('${p.id}',this.value)">${db.spaces.map(s=>`<option value="${s.id}" ${s.id===p.spaceId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></label>
+      ${p.type==='project'?`<label class="prop"><small>Status</small><select onchange="page('${p.id}').status=this.value;save();renderSide()">${['ativo','pausado','concluído','arquivado'].map(s=>`<option ${p.status===s?'selected':''}>${s}</option>`).join('')}</select></label>`:''}
+      <span class="prop"><small>Editado</small><b>${new Date(p.updatedAt||Date.now()).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</b></span>
+      <span class="sp"></span>
+      <button class="pillbtn light" onclick="newPage('${p.spaceId}','page','${p.id}')">${I('plus','sm')} Subpágina</button>
+      <button class="pillbtn light danger" onclick="if(confirm('Apagar esta página e as subpáginas?')){deletePage('${p.id}');save();go('#/home')}">Apagar</button>
     </div>
-    ${body}${kidsHtml}${extra}</div>`;
+    ${summary}${body}${kidsHtml}${extra}</div>`;
 }
 function movePage(id,sp){const mv=pid=>{const p=page(pid);p.spaceId=sp;db.pages.filter(k=>k.parentId===pid).forEach(k=>mv(k.id))};const p=page(id);if(p.parentId&&page(p.parentId)?.spaceId!==sp)p.parentId=null;mv(id);save();render()}
 function pickIcon(id,el){
-  const icons=['📄','📁','🚀','💡','🔁','🎯','📊','💰','🧪','🫧','🧀','🥤','📦','🛒','📣','🎨','✍️','🤝','📅','🏁','🌿','❤️','⭐','🔥'];
+  const icons=['📄','📁','🚀','💡','🔁','🎯','📊','💰','🧪','💧','🧀','🥤','📦','🛒','📣','🎨','✍️','🤝','📅','🏁','🌿','❤️','⭐','🔥'];
   showMenu(el.getBoundingClientRect(),icons.map(i=>({k:i,l:'',f:()=>{page(id).icon=i;touch(page(id));render()}})));
   const m=$('#menu');m.style.minWidth='0';m.style.display='grid';m.style.gridTemplateColumns='repeat(6,1fr)';
   $$('.mi',m).forEach(x=>x.style.justifyContent='center');
@@ -825,7 +883,7 @@ function bindBlocks(p){
     }
   });
   // clique abaixo dos blocos foca o último / cria um novo
-  wrap.parentElement.querySelector('.hint')?.addEventListener('click',()=>{const last=p.blocks[p.blocks.length-1];if(!last||last.type!=='p'||last.text){const nb={id:uid(),type:'p',text:''};p.blocks.push(nb);touch(p);renderBlocks(p,nb.id)}else focusBlock(last.id)});
+  wrap.parentElement.querySelector('.addline')?.addEventListener('click',()=>{const last=p.blocks[p.blocks.length-1];if(!last||last.type!=='p'||last.text){const nb={id:uid(),type:'p',text:''};p.blocks.push(nb);touch(p);renderBlocks(p,nb.id)}else focusBlock(last.id)});
 }
 function applyBlock(p,b,t){
   b.text=b.text.replace(/^\/\S*/,'');
@@ -1029,6 +1087,9 @@ function viewSettings(){
     <h2 class="sec">Google Calendar</h2>
     <div class="note">Com o Google conectado, a Agenda mostra suas reuniões e cada tarefa que você encaixa vira um bloco no seu calendário. Precisa de um "Client ID" do Google Cloud (a Jaque configura com você uma vez só).</div>
     <label>Client ID do Google</label><input id="gcid" value="${esc(settings().gcalClientId||'')}" placeholder="xxxxxxxx.apps.googleusercontent.com" onchange="settings().gcalClientId=this.value.trim();save()">
+    <label>Ponte permanente (Apps Script): URL do app da Web</label><input id="gasurl" value="${esc(settings().gasUrl||'')}" placeholder="https://script.google.com/macros/s/.../exec" onchange="settings().gasUrl=this.value.trim();gCache={};save()">
+    <label>Chave da ponte</label><input id="gaskey" type="password" value="${esc(settings().gasKey||'')}" onchange="settings().gasKey=this.value.trim();gCache={};save()">
+    ${gBridge()?'<div style="margin-top:8px"><span class="pill done">Ponte ligada: agenda conectada sem login</span></div>':''}
     <label style="display:flex;gap:8px;align-items:center;margin-top:12px"><input type="checkbox" style="width:auto" ${settings().gcalPush?'checked':''} onchange="settings().gcalPush=this.checked;save()"> Mandar os blocos de tarefa pro Google Calendar</label>
     <div style="margin-top:12px;display:flex;gap:8px">${gOn()?'<span class="pill done">Conectado nesta sessão</span>':`<button class="btn primary" onclick="settings().gcalClientId=$('#gcid').value.trim();save();gLogin()">Entrar com Google</button>`}</div>
     <h2 class="sec">Minha rotina (usada no encaixe automático)</h2>
@@ -1118,7 +1179,9 @@ const defDur=t=>t.estimate||(t.tipo==='Projeto'?60:t.tipo==='Lembrete'?15:30);
 const GSCOPE='https://www.googleapis.com/auth/calendar.events';
 let gTok=null,gClient=null,gCache={},gErr='';
 try{const t=JSON.parse(sessionStorage.getItem('caderno.gtok'));if(t&&t.exp>Date.now())gTok=t}catch(e){}
-const gOn=()=>!!(gTok&&gTok.exp>Date.now());
+const gBridge=()=>{const st=db.settings||{};return st.gasUrl&&st.gasKey?st:null};
+const gOn=()=>!!gBridge()||!!(gTok&&gTok.exp>Date.now());
+async function gas(payload){const b=gBridge();const r=await fetch(b.gasUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...payload,key:b.gasKey})});const j=await r.json();if(j.error)throw new Error(j.error);return j}
 function loadGis(){return new Promise((ok,ko)=>{if(window.google?.accounts?.oauth2)return ok();const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=ok;s.onerror=()=>ko(new Error('não carregou o Google'));document.head.appendChild(s)})}
 async function gLogin(silent){
   const cid=settings().gcalClientId;if(!cid)return go('#/settings');
@@ -1140,6 +1203,9 @@ async function gApi(path,opt={}){
 }
 async function gLoad(from,to){
   const k=dstr(from)+'_'+dstr(to);if(gCache[k])return gCache[k];
+  if(gBridge()){const j=await gas({action:'list',from:from.toISOString(),to:to.toISOString()});
+    const evs=(j.items||[]).filter(e=>!e.task).map(e=>{const st=new Date(e.start);return{id:e.id,title:e.title||'(sem título)',allDay:e.allDay,start:e.allDay?pdate(e.start.slice(0,10)):st,end:e.allDay?pdate(e.end.slice(0,10)):new Date(e.end),where:e.where||'',people:e.people||[],link:`https://calendar.google.com/calendar/r/day/${st.getFullYear()}/${st.getMonth()+1}/${st.getDate()}`}});
+    gCache[k]=evs;return evs}
   const q=new URLSearchParams({timeMin:from.toISOString(),timeMax:to.toISOString(),singleEvents:'true',orderBy:'startTime',maxResults:'250'});
   const j=await gApi('calendars/primary/events?'+q);
   const evs=(j.items||[]).filter(e=>e.status!=='cancelled'&&!e.extendedProperties?.private?.cadernoTask).map(e=>({id:e.id,title:e.summary||'(sem título)',allDay:!e.start.dateTime,
@@ -1151,11 +1217,12 @@ function blockTimes(b){const d=pdate(b.date);const s=new Date(d);s.setMinutes(hm
 async function gPush(t){
   if(!gOn()||!settings().gcalPush||!t.block)return;
   const[s,e]=blockTimes(t.block);
+  if(gBridge()){try{const r=await gas({action:'upsert',id:t.block.gid||'',title:'✅ '+t.title,start:s.toISOString(),end:e.toISOString(),desc:'Bloco de tarefa do Caderno'+(t.notes?'\n\n'+t.notes:''),task:t.id});if(r.id&&t.block){t.block.gid=r.id;save()}}catch(err){console.warn(err)}return}
   const body={summary:'✅ '+t.title,description:'Bloco de tarefa do Caderno'+(t.notes?'\n\n'+t.notes:''),start:{dateTime:s.toISOString()},end:{dateTime:e.toISOString()},extendedProperties:{private:{cadernoTask:t.id}}};
   try{const r=t.block.gid?await gApi('calendars/primary/events/'+t.block.gid,{method:'PATCH',body:JSON.stringify(body)}):await gApi('calendars/primary/events',{method:'POST',body:JSON.stringify(body)});
     if(r&&r.id&&t.block){t.block.gid=r.id;save()}}catch(e){console.warn(e);if(t.block.gid&&String(e.message).includes('404')){delete t.block.gid;gPush(t)}}
 }
-async function gDrop(gid){if(gid&&gOn())try{await gApi('calendars/primary/events/'+gid,{method:'DELETE'})}catch(e){}}
+async function gDrop(gid){if(gid&&gBridge()){try{await gas({action:'delete',id:gid})}catch(e){}return}if(gid&&gOn())try{await gApi('calendars/primary/events/'+gid,{method:'DELETE'})}catch(e){}}
 function setBlock(t,date,start,dur){t.block={...(t.block||{}),date,start,dur:dur||t.block?.dur||defDur(t)};delete t.block.auto;save();gPush(t)}
 function clearBlock(t){const gid=t.block?.gid;delete t.block;save();gDrop(gid)}
 
@@ -1216,16 +1283,18 @@ function viewAgenda(){
       </div>
     </div>
     ${banner}
+    ${window.agPicked&&db.tasks.find(x=>x.id===window.agPicked)?`<div class="pick-banner"><span>${I('target','sm')} Toque num horário pra encaixar <b>${esc(db.tasks.find(x=>x.id===window.agPicked).title)}</b></span><button class="pillbtn light" onclick="window.agPicked=null;render()">Cancelar</button></div>`:''}
     <div class="ag-wrap ${ui.agPanel===false?'nopanel':''}">
       <div class="cal ${ui.agView==='day'?'':'week'}" id="cal"><div class="empty">Carregando...</div></div>
       <aside class="side-tasks">
         <h3>Pra encaixar</h3>
-        <div class="hint" style="margin:0 0 8px">Arraste uma tarefa pra um horário. Clique num horário vazio pra criar uma tarefa ali.</div>
+        <div class="hint" style="margin:0 0 8px">Arraste uma tarefa pra um horário, ou toque nela e depois no horário. Tocar num horário vazio cria uma tarefa ali.</div>
         <div class="fchips"><button class="${fs==='all'?'on':''}" onclick="ui.agSpace='all';saveUI();render()">Todas</button>${db.spaces.map(s=>`<button class="${fs===s.id?'on':''}" title="${esc(s.name)}" onclick="ui.agSpace='${s.id}';saveUI();render()"><i style="background:${spaceColor(s.id)}"></i>${esc(s.name)}</button>`).join('')}</div>
-        ${pending.map(t=>`<div class="st-item" draggable="true" data-task="${t.id}" onclick="openTask('${t.id}')"><span class="dot" style="background:${spaceColor(t.spaceId)}"></span><span style="flex:1">${esc(t.title)}<div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">${prioPill(t.priority)}${t.due?`<span class="pill ${t.due<td?'late':''}">${fmtDate(t.due)}</span>`:''}<span class="pill">${defDur(t)} min</span></div></span></div>`).join('')||'<div class="empty">Tudo encaixado.</div>'}
+        ${pending.map(t=>`<div class="st-item ${window.agPicked===t.id?'sel':''}" draggable="true" data-task="${t.id}" onclick="agPick('${t.id}')"><button class="open" title="Abrir tarefa" onclick="event.stopPropagation();openTask('${t.id}')">abrir</button><span class="dot" style="background:${spaceColor(t.spaceId)}"></span><span style="flex:1">${esc(t.title)}<div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">${prioPill(t.priority)}${t.due?`<span class="pill ${t.due<td?'late':''}">${fmtDate(t.due)}</span>`:''}<span class="pill">${defDur(t)} min</span></div></span></div>`).join('')||'<div class="empty">Tudo encaixado.</div>'}
       </aside>
     </div></div>`;
 }
+function agPick(id){window.agPicked=window.agPicked===id?null:id;render();if(window.agPicked&&innerWidth<820)$('#cal')?.scrollIntoView({behavior:'smooth'})}
 async function agAuto(){
   const date=ui.agView==='day'&&ui.agDate?ui.agDate:today();
   let evs=[];if(gOn()){try{const d=pdate(date);const e=new Date(d);e.setDate(d.getDate()+1);evs=await gLoad(d,e)}catch(e){}}
@@ -1273,7 +1342,8 @@ async function renderCal(){
     c.addEventListener('dragover',e=>{e.preventDefault();c.classList.add('drop')});
     c.addEventListener('dragleave',()=>c.classList.remove('drop'));
     c.addEventListener('drop',e=>{e.preventDefault();c.classList.remove('drop');const t=db.tasks.find(x=>x.id===e.dataTransfer.getData('text'));window._dragOff=0;if(!t)return;setBlock(t,c.dataset.date,m2hm(minAt(e)));render()});
-    c.addEventListener('click',e=>{if(e.target!==c&&!e.target.classList.contains('hline'))return;const m=minAt(e);const title=prompt('Nova tarefa às '+m2hm(m)+':');if(!title)return;
+    c.addEventListener('click',e=>{if(e.target!==c&&!e.target.classList.contains('hline'))return;window._dragOff=0;const m=minAt(e);
+      if(window.agPicked){const t=db.tasks.find(x=>x.id===window.agPicked);window.agPicked=null;if(t){setBlock(t,c.dataset.date,m2hm(m));render();toast('Encaixada às '+m2hm(m),()=>{clearBlock(t);render()})}return}const title=prompt('Nova tarefa às '+m2hm(m)+':');if(!title)return;
       const q=parseQuick(title);const t={id:uid(),status:'todo',owner:'Juju',projectId:null,spaceId:ui.agSpace&&ui.agSpace!=='all'?ui.agSpace:db.spaces[0].id,notes:'',createdAt:Date.now(),...q};db.tasks.push(t);setBlock(t,c.dataset.date,m2hm(m));render()});
   });
 }
