@@ -269,6 +269,12 @@ table.tasks tr:hover td{background:#e8e0d2}
   .stats{grid-template-columns:1fr}
   h1.title{font-size:30px}
 }
+.caminho{background:var(--panel);border-radius:var(--radius);padding:18px 22px;margin:0 0 22px;display:flex;gap:16px;align-items:flex-start}
+.caminho .n{background:#161616;color:#fff;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+.caminho .q{font-size:16px;line-height:1.6;flex:1}
+.caminho .q p{margin:0 0 6px}
+.caminho .src{font-size:12px;color:var(--muted)}
+.caminho .src a{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -507,6 +513,7 @@ function viewHome(){
   return `<div class="wrap wide">
     <h1 class="title">${hi}, Juju</h1>
     <div class="meta">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})} · ${open.length} tarefas abertas${inboxN?` · <a href="#/registro" style="color:var(--accent)">${inboxN} no registro pra processar</a>`:''}</div>
+    <div class="caminho" id="caminho"></div>
     <div class="stats">
       <div class="stat" style="background:var(--pink)" onclick="ui.taskView='agenda';saveUI();go('#/tasks')"><h4>🔥 Urgentes e atrasadas</h4><b>${open.filter(x=>x.priority==='urgente'||(x.due&&x.due<t)).length}</b><small>tarefas pedindo atenção</small></div>
       <div class="stat" style="background:var(--blue)" onclick="ui.taskView='board';saveUI();go('#/tasks')"><h4>⚡ Fazendo agora</h4><b>${open.filter(x=>x.status==='doing').length}</b><small>em andamento</small></div>
@@ -1141,6 +1148,23 @@ async function renderCal(){
   });
 }
 
+/* ============ Caminho, ponto do dia ============ */
+function caminhoN(date){let h=2166136261;for(const c of 'caminho'+date){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return (Math.abs(h)%999)+1}
+async function loadCaminho(){
+  const el=$('#caminho');if(!el)return;const d=today();const n=caminhoN(d);const url='https://escriva.org/pt-br/camino/'+n+'/';
+  const show=html=>{if($('#caminho'))$('#caminho').innerHTML=`<span class="n">Caminho · ${n}</span><div class="q">${html}<div class="src">São Josemaria Escrivá · <a href="${url}" target="_blank">ler no escriva.org</a></div></div>`};
+  let cached=null;try{cached=JSON.parse(localStorage.getItem('caderno.caminho'))}catch(e){}
+  if(cached&&cached.d===d&&cached.n===n)return show(cached.h);
+  show('<p style="color:var(--muted)">Carregando o ponto do dia...</p>');
+  try{
+    const doc=new DOMParser().parseFromString(await (await fetch(url)).text(),'text/html');
+    const ps=[...doc.querySelectorAll('article .imperavi-body p')].map(p=>`<p>${esc(p.textContent.trim())}</p>`).join('');
+    if(!ps)throw new Error('vazio');
+    try{localStorage.setItem('caderno.caminho',JSON.stringify({d,n,h:ps}))}catch(e){}
+    show(ps);
+  }catch(e){show('<p>Hoje é o ponto '+n+'. Toque no link pra ler.</p>')}
+}
+
 /* ============ toast ============ */
 function toast(msg){const t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d1c1a;color:#fff;padding:8px 16px;border-radius:8px;font-size:14px;z-index:99';document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
 
@@ -1159,6 +1183,7 @@ function afterRender(r,id){
     const pt=$('#ptask');if(pt)pt.addEventListener('keydown',e=>{if(e.key==='Enter'&&pt.value.trim()){const q=parseQuick(pt.value);db.tasks.push({id:uid(),status:'todo',projectId:p.id,spaceId:p.spaceId,notes:'',createdAt:Date.now(),...q});save();render();$('#ptask').focus()}});
   }
   if(r==='agenda')renderCal();
+  if(r==='home'||!r)loadCaminho();
   if(r==='registro'){const ri=$('#regin');ri.focus();ri.addEventListener('keydown',e=>{if(e.key==='Enter'&&ri.value.trim()){db.inbox.push({id:uid(),text:ri.value.trim(),tipo:'',spaceId:'',date:today(),processed:false,createdAt:Date.now()});save();render()}})}
   if(r==='tasks'&&ui.taskView==='board'){
     $$('.card').forEach(c=>c.addEventListener('dragstart',e=>{e.dataTransfer.setData('text',c.dataset.id)}));
