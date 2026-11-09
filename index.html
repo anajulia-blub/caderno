@@ -101,10 +101,21 @@ table.tasks .chk{width:28px}
 table.tasks .ttl{cursor:pointer}
 table.tasks tr.done .ttl{color:var(--muted);text-decoration:line-through}
 .pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:20px;background:var(--side);color:var(--muted);white-space:nowrap}
-.pill.todo{background:#efeeeb;color:var(--todo)} .pill.doing{background:#fdf1dc;color:var(--doing)} .pill.done{background:#e1f2e8;color:var(--done)}
-.pill.alta{background:#fde4e4;color:var(--danger)} .pill.late{background:#fde4e4;color:var(--danger)}
+.pill.todo{background:#efeeeb;color:var(--todo)} .pill.doing{background:#e3ecff;color:var(--accent)} .pill.waiting{background:#fdf1dc;color:var(--doing)} .pill.done{background:#e1f2e8;color:var(--done)}
+.pill.urgente{background:#c43d3d;color:#fff} .pill.alta{background:#fde9dc;color:#c0601a} .pill.late{background:#fde4e4;color:var(--danger)}
+.pill.tipo{background:#f1eef8;color:#6b54a8}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px}
+.chips button{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:3px 12px;font-size:13px;color:var(--muted)}
+.chips button.on{background:var(--text);border-color:var(--text);color:#fff}
+.group-h{font-size:13px;font-weight:650;color:var(--muted);margin:22px 0 4px;text-transform:uppercase;letter-spacing:.04em}
+.group-h.red{color:var(--danger)}
+.pulse{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px}
+.pulse .pc{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.pulse .pc:hover{border-color:#cfcac0}
+.pulse .pc b{font-size:22px;display:block}
+.pulse .pc small{color:var(--muted)}
 .pill.src{background:var(--accent-soft);color:var(--accent)}
-.board{display:grid;grid-template-columns:repeat(3,minmax(240px,1fr));gap:14px;align-items:start}
+.board{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px;align-items:start;overflow-x:auto}
 .col{background:var(--side);border-radius:var(--radius);padding:10px;min-height:120px}
 .col h3{font-size:13px;margin:2px 4px 10px;display:flex;justify-content:space-between;color:var(--muted)}
 .col.over{outline:2px dashed var(--accent);outline-offset:-2px}
@@ -207,7 +218,11 @@ let db, cfg;
 try{db=JSON.parse(localStorage.getItem(LS_DATA))}catch(e){}
 try{cfg=JSON.parse(localStorage.getItem(LS_CFG))||{}}catch(e){cfg={}}
 if(!db||!db.pages) db=seed();
-db.meetings=db.meetings||[]; db.tasks=db.tasks||[];
+function migrate(){
+  db.meetings=db.meetings||[]; db.tasks=db.tasks||[]; db.inbox=db.inbox||[];
+  db.tasks.forEach(t=>{if(t.priority==='média'||!t.priority)t.priority='normal'});
+}
+migrate();
 let ui={expanded:{}, taskView:'board', taskFilter:{space:'all',project:'all',status:'open'}};
 try{Object.assign(ui,JSON.parse(localStorage.getItem('caderno.ui'))||{})}catch(e){}
 const saveUI=()=>{try{localStorage.setItem('caderno.ui',JSON.stringify(ui))}catch(e){}};
@@ -236,7 +251,7 @@ async function pull(){
     if(!content||j.encoding==='none'){ // arquivos > 1MB
       const raw=await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/git/blobs/${j.sha}`,{headers:{Authorization:'Bearer '+cfg.token}}).then(x=>x.json());content=raw.content}
     const remote=JSON.parse(b64dec(content));
-    if(remote&&remote.pages){db=remote;db.meetings=db.meetings||[];db.tasks=db.tasks||[];localStorage.setItem(LS_DATA,JSON.stringify(db))}
+    if(remote&&remote.pages){db=remote;migrate();localStorage.setItem(LS_DATA,JSON.stringify(db))}
     setSync('ok','Salvo no GitHub'); render();
   }catch(e){console.error(e);setSync('err','Erro: '+e.message)}
 }
@@ -271,7 +286,10 @@ async function pullQuiet(){ // checa se mudou em outro aparelho (ou se a Jaque g
 const page=id=>db.pages.find(p=>p.id===id);
 const space=id=>db.spaces.find(s=>s.id===id);
 const projects=()=>db.pages.filter(p=>p.type==='project');
-const statusLbl={todo:'A fazer',doing:'Fazendo',done:'Feito'};
+const statusLbl={todo:'A fazer',doing:'Fazendo',waiting:'Aguardando',done:'Feito'};
+const PRIOS=['urgente','alta','normal','baixa'];
+const TIPOS=['Pontual','Projeto','Recorrente','Lembrete','Evento'];
+const prioPill=p=>p==='urgente'?'<span class="pill urgente">urgente</span>':p==='alta'?'<span class="pill alta">alta</span>':'';
 const fmtDate=d=>{if(!d)return'';const[y,m,dd]=d.split('-');return dd+'/'+m};
 const typeLbl={page:'Página',project:'Projeto',board:'Brainstorm',process:'Processo'};
 const typeIcon={page:'📄',project:'📁',board:'💡',process:'🔁'};
@@ -304,6 +322,7 @@ function render(){
   if(r==='page'&&page(id))html=viewPage(page(id));
   else if(r==='tasks')html=viewTasks();
   else if(r==='meetings')html=viewMeetings();
+  else if(r==='registro')html=viewRegistro();
   else if(r==='meeting'&&db.meetings.find(m=>m.id===id))html=viewMeeting(db.meetings.find(m=>m.id===id));
   else if(r==='settings')html=viewSettings();
   else html=viewHome();
@@ -334,6 +353,7 @@ function renderSide(){
       ${item('#/home','🏠','Início')}
       ${item('#/tasks','✅','Tarefas')}
       ${item('#/meetings','🎙️','Reuniões')}
+      ${item('#/registro','📥','Registro do dia'+(db.inbox.filter(i=>!i.processed).length?' ('+db.inbox.filter(i=>!i.processed).length+')':''))}
       ${db.spaces.map(s=>`
         <div class="nav-sec"><span>${s.icon} ${esc(s.name)}</span><button title="Nova página" onclick="newMenu(event,'${s.id}')">+</button></div>
         ${projs(s.id)}
@@ -369,25 +389,55 @@ document.addEventListener('mousedown',e=>{if(!e.target.closest('#menu'))hideMenu
 
 /* ============ início ============ */
 function viewHome(){
-  const t=today();
+  const t=today(); const fs=ui.homeSpace||'all';
+  const inSp=x=>fs==='all'||x.spaceId===fs;
   const open=db.tasks.filter(x=>x.status!=='done');
-  const late=open.filter(x=>x.due&&x.due<t), tod=open.filter(x=>x.due===t), doing=open.filter(x=>x.status==='doing'&&x.due!==t&&!(x.due&&x.due<t));
-  const recent=[...db.pages].sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,6);
+  const mine=open.filter(inSp);
+  const urg=mine.filter(x=>x.priority==='urgente'||(x.due&&x.due<t)).sort(taskSort);
+  const tod=mine.filter(x=>x.due===t&&x.priority!=='urgente');
+  const prio=mine.filter(x=>x.priority==='alta'&&!urg.includes(x)&&!tod.includes(x)).sort(taskSort).slice(0,12);
+  const waiting=mine.filter(x=>x.status==='waiting').sort(taskSort);
   const mts=[...db.meetings].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,5);
+  const inboxN=db.inbox.filter(i=>!i.processed).length;
   const h=new Date().getHours();
   const hi=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
-  const trow=x=>`<div class="row" onclick="openTask('${x.id}')"><input type="checkbox" onclick="event.stopPropagation();toggleTask('${x.id}')"><span class="grow">${esc(x.title)}</span>${x.due?`<span class="pill ${x.due<t?'late':''}">${fmtDate(x.due)}</span>`:''}</div>`;
-  return `<div class="wrap">
+  const trow=x=>{const sp=space(x.spaceId);return `<div class="row" onclick="openTask('${x.id}')"><input type="checkbox" onclick="event.stopPropagation();toggleTask('${x.id}')"><span class="grow">${esc(x.title)}</span>${fs==='all'&&sp?`<span title="${esc(sp.name)}">${sp.icon}</span>`:''}${prioPill(x.priority)}${x.due?`<span class="pill ${x.due<t?'late':''}">${fmtDate(x.due)}</span>`:''}</div>`};
+  const pulse=db.spaces.map(s=>{const o=open.filter(x=>x.spaceId===s.id);const u=o.filter(x=>x.priority==='urgente'||(x.due&&x.due<t)).length;
+    return `<div class="pc" onclick="ui.homeSpace='${s.id}';saveUI();render()"><small>${s.icon} ${esc(s.name)}</small><b>${o.length}</b><small>${u?`<span style="color:var(--danger)">${u} urgentes/atrasadas</span>`:'em dia'}</small></div>`}).join('');
+  return `<div class="wrap wide">
     <h1 class="title">${hi}, Juju</h1>
-    <div class="meta">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})} · ${open.length} tarefas abertas</div>
+    <div class="meta">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})} · ${open.length} tarefas abertas${inboxN?` · <a href="#/registro" style="color:var(--accent)">${inboxN} no registro pra processar</a>`:''}</div>
+    <div class="pulse">${pulse}</div>
+    <div class="chips"><button class="${fs==='all'?'on':''}" onclick="ui.homeSpace='all';saveUI();render()">Todas as frentes</button>${db.spaces.map(s=>`<button class="${fs===s.id?'on':''}" onclick="ui.homeSpace='${s.id}';saveUI();render()">${s.icon} ${esc(s.name)}</button>`).join('')}</div>
     <div class="task-add"><input id="quick" placeholder="Nova tarefa para hoje... (Enter)"></div>
     <div class="grid2">
-      <div class="box"><h3>Atrasadas e hoje</h3>${[...late,...tod].map(trow).join('')||'<div class="empty">Nada pra hoje.</div>'}</div>
-      <div class="box"><h3>Fazendo</h3>${doing.map(trow).join('')||'<div class="empty">Nada em andamento.</div>'}</div>
-      <div class="box"><h3>Reuniões recentes</h3>${mts.map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span>🎙️</span><span class="grow">${esc(m.title)}</span><span class="pill">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ainda.</div>'}</div>
-      <div class="box"><h3>Editadas recentemente</h3>${recent.map(p=>`<div class="row" onclick="go('#/page/${p.id}')"><span>${p.icon||'📄'}</span><span class="grow">${esc(p.title||'Sem título')}</span><span class="pill">${typeLbl[p.type]}</span></div>`).join('')}</div>
+      <div class="box"><h3>🔥 Alertas: urgentes e atrasadas</h3>${urg.map(trow).join('')||'<div class="empty">Nada pegando fogo.</div>'}</div>
+      <div class="box"><h3>📌 Minhas prioridades</h3>${[...tod,...prio].map(trow).join('')||'<div class="empty">Sem prioridade alta aberta.</div>'}</div>
+      <div class="box"><h3>⏳ Aguardando alguém</h3>${waiting.map(trow).join('')||'<div class="empty">Nada parado esperando.</div>'}</div>
+      <div class="box"><h3>🎙️ Reuniões recentes</h3>${mts.map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span class="grow">${esc(m.title)}</span><span class="pill">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ainda.</div>'}</div>
     </div></div>`;
 }
+
+/* ============ registro do dia ============ */
+const REG_TIPOS=['Ideia','Recado','Reunião','Aprendizado','Outro'];
+function viewRegistro(){
+  const items=[...db.inbox].sort((a,b)=>(a.processed-b.processed)||b.createdAt-a.createdAt);
+  return `<div class="wrap">
+    <h1 class="title">📥 Registro do dia</h1>
+    <div class="meta">Despeja tudo aqui na hora, sem pensar. No fim do dia, processa: vira tarefa ou marca como processado.</div>
+    <div class="task-add"><input id="regin" placeholder="Anota qualquer coisa... (Enter)"></div>
+    ${items.map(i=>{const sp=space(i.spaceId);return `<div class="row" style="cursor:default;${i.processed?'opacity:.5':''}">
+      <span class="grow" style="white-space:normal">${esc(i.text)}</span>
+      <select onchange="regSet('${i.id}','tipo',this.value)" style="font-size:12px;border:1px solid var(--line);border-radius:6px"><option value="">tipo</option>${REG_TIPOS.map(x=>`<option ${i.tipo===x?'selected':''}>${x}</option>`).join('')}</select>
+      <select onchange="regSet('${i.id}','spaceId',this.value)" style="font-size:12px;border:1px solid var(--line);border-radius:6px"><option value="">frente</option>${db.spaces.map(s=>`<option value="${s.id}" ${i.spaceId===s.id?'selected':''}>${s.icon} ${esc(s.name)}</option>`).join('')}</select>
+      <span class="pill">${fmtDate(i.date)}</span>
+      ${i.taskId?'<span class="pill src">virou tarefa</span>':`<button class="btn ghost" onclick="regToTask('${i.id}')">→ tarefa</button>`}
+      <input type="checkbox" title="Processado" ${i.processed?'checked':''} onchange="regSet('${i.id}','processed',this.checked);render()">
+    </div>`}).join('')||'<div class="empty">Registro vazio.</div>'}
+  </div>`;
+}
+function regSet(id,k,v){const i=db.inbox.find(x=>x.id===id);i[k]=v;save()}
+function regToTask(id){const i=db.inbox.find(x=>x.id===id);const t={id:uid(),title:i.text,status:'todo',projectId:null,spaceId:i.spaceId||db.spaces[0].id,due:'',priority:'normal',notes:'Veio do registro do dia',createdAt:Date.now()};db.tasks.push(t);i.taskId=t.id;i.processed=true;save();render();openTask(t.id)}
 
 /* ============ página ============ */
 function viewPage(p){
@@ -546,7 +596,7 @@ function applyBlock(p,b,t){
 function blockToTask(p,b){
   const title=b.text.trim()||'Nova tarefa';
   const projectId=p.type==='project'?p.id:(ancestorProject(p)?.id||null);
-  const t={id:uid(),title,status:'todo',projectId,spaceId:p.spaceId,due:'',priority:'média',notes:'Criada a partir de: '+(p.title||'página'),createdAt:Date.now()};
+  const t={id:uid(),title,status:'todo',projectId,spaceId:p.spaceId,due:'',priority:'normal',notes:'Criada a partir de: '+(p.title||'página'),createdAt:Date.now()};
   db.tasks.push(t);b.type='todo';b.text='→ '+title;touch(p);renderBlocks(p);
   toast('Tarefa criada');
 }
@@ -562,7 +612,7 @@ function renderCanvas(p){
     const c=p.cards.find(x=>x.id===el.dataset.id);
     $('.txt',el).addEventListener('input',e=>{c.text=e.target.innerText;touch(p)});
     $('[data-a=del]',el).onclick=()=>{p.cards=p.cards.filter(x=>x!==c);touch(p);renderCanvas(p)};
-    $('[data-a=task]',el).onclick=()=>{db.tasks.push({id:uid(),title:c.text.split('\n')[0]||'Ideia',status:'todo',projectId:ancestorProject(p)?.id||null,spaceId:p.spaceId,due:'',priority:'média',notes:c.text,createdAt:Date.now()});save();toast('Tarefa criada')};
+    $('[data-a=task]',el).onclick=()=>{db.tasks.push({id:uid(),title:c.text.split('\n')[0]||'Ideia',status:'todo',projectId:ancestorProject(p)?.id||null,spaceId:p.spaceId,due:'',priority:'normal',notes:c.text,createdAt:Date.now()});save();toast('Tarefa criada')};
     $('.bar',el).addEventListener('pointerdown',e=>{
       if(e.target.tagName==='BUTTON')return;e.preventDefault();
       const sx=e.clientX,sy=e.clientY,ox=c.x,oy=c.y;el.style.zIndex=10;
@@ -579,7 +629,7 @@ function addSticky(color){
 }
 
 /* ============ tarefas ============ */
-const prioRank={alta:0,'média':1,baixa:2};
+const prioRank={urgente:0,alta:1,normal:2,baixa:3};
 const taskSort=(a,b)=>(a.status==='done')-(b.status==='done')||(a.due||'9999').localeCompare(b.due||'9999')||prioRank[a.priority]-prioRank[b.priority];
 function taskTable(ts){
   if(!ts.length)return '<div class="empty">Nenhuma tarefa.</div>';
@@ -589,33 +639,52 @@ function taskTable(ts){
     <td class="ttl" onclick="openTask('${x.id}')">${esc(x.title)} ${x.source?'<span class="pill src">🎙️ reunião</span>':''}</td>
     <td>${pj?`<span class="pill">${pj.icon||''} ${esc(pj.title)}</span>`:''}</td>
     <td><span class="pill ${x.status}">${statusLbl[x.status]}</span></td>
-    <td>${x.priority==='alta'?'<span class="pill alta">alta</span>':''}</td>
+    <td>${prioPill(x.priority)}${x.tipo?` <span class="pill tipo">${esc(x.tipo)}</span>`:''}</td>
     <td style="text-align:right">${x.due?`<span class="pill ${x.due<t&&x.status!=='done'?'late':''}">${fmtDate(x.due)}</span>`:''}</td></tr>`}).join('')}</table>`;
 }
 function filteredTasks(){
   const f=ui.taskFilter;
   return db.tasks.filter(t=>(f.space==='all'||t.spaceId===f.space)&&(f.project==='all'||(f.project==='none'?!t.projectId:t.projectId===f.project))&&(f.status==='all'||(f.status==='open'?t.status!=='done':t.status===f.status)));
 }
+function taskMatch(x){const f=ui.taskFilter;return (f.space==='all'||x.spaceId===f.space)&&(f.project==='all'||(f.project==='none'?!x.projectId:x.projectId===f.project))&&(!f.owner||f.owner==='all'||(x.owner||'Juju')===f.owner)}
 function viewTasks(){
-  const f=ui.taskFilter;const ts=filteredTasks().sort(taskSort);
-  const t=today();
-  const board=ui.taskView==='board'?`<div class="board">${['todo','doing','done'].map(s=>{
-    const col=db.tasks.filter(x=>x.status===s&&(f.space==='all'||x.spaceId===f.space)&&(f.project==='all'||(f.project==='none'?!x.projectId:x.projectId===f.project))).sort(taskSort);
-    return `<div class="col" data-s="${s}"><h3><span>${statusLbl[s]}</span><span>${col.length}</span></h3>
-    ${col.map(x=>{const pj=page(x.projectId);return `<div class="card" draggable="true" data-id="${x.id}" onclick="openTask('${x.id}')">${esc(x.title)}
-      <div class="sub">${pj?`<span class="pill">${pj.icon||''} ${esc(pj.title)}</span>`:''}${x.priority==='alta'?'<span class="pill alta">alta</span>':''}${x.due?`<span class="pill ${x.due<t&&s!=='done'?'late':''}">${fmtDate(x.due)}</span>`:''}${x.source?'<span class="pill src">🎙️</span>':''}</div></div>`}).join('')}</div>`}).join('')}</div>`:taskTable(ts);
+  const f=ui.taskFilter;const t=today();const v=ui.taskView;
+  const card=x=>{const pj=page(x.projectId);const sp=space(x.spaceId);return `<div class="card" draggable="true" data-id="${x.id}" onclick="openTask('${x.id}')">${esc(x.title)}
+      <div class="sub">${f.space==='all'&&sp?`<span class="pill">${sp.icon} ${esc(sp.name)}</span>`:''}${pj?`<span class="pill">${pj.icon||''} ${esc(pj.title)}</span>`:''}${prioPill(x.priority)}${x.owner&&x.owner!=='Juju'?`<span class="pill">👤 ${esc(x.owner)}</span>`:''}${x.due?`<span class="pill ${x.due<t&&x.status!=='done'?'late':''}">${fmtDate(x.due)}</span>`:''}${x.source?'<span class="pill src">🎙️</span>':''}</div></div>`};
+  let body='';
+  if(v==='board'){
+    body=`<div class="board">${Object.keys(statusLbl).map(s=>{
+      let col=db.tasks.filter(x=>x.status===s&&taskMatch(x)).sort(taskSort);
+      const total=col.length; if(s==='done')col=col.sort((a,b)=>(b.doneAt||0)-(a.doneAt||0)).slice(0,25);
+      return `<div class="col" data-s="${s}"><h3><span>${statusLbl[s]}</span><span>${total}</span></h3>${col.map(card).join('')}${s==='done'&&total>25?`<div class="empty">+${total-25} na lista</div>`:''}</div>`}).join('')}</div>`;
+  }else if(v==='agenda'){
+    const ts=db.tasks.filter(x=>x.status!=='done'&&taskMatch(x)).sort(taskSort);
+    const d=new Date();const add=n=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+    const tm=add(1), wk=add(7);
+    const groups=[['Atrasadas',x=>x.due&&x.due<t,'red'],['Hoje',x=>x.due===t],['Amanhã',x=>x.due===tm],['Próximos 7 dias',x=>x.due>tm&&x.due<=wk],['Mais pra frente',x=>x.due>wk],['Sem prazo',x=>!x.due]];
+    body=groups.map(([l,fn,c])=>{const g=ts.filter(fn);return g.length?`<div class="group-h ${c||''}">${l} · ${g.length}</div>${taskTable(g)}`:''}).join('');
+  }else if(v==='frente'){
+    const ts=db.tasks.filter(x=>x.status!=='done'&&taskMatch(x)).sort(taskSort);
+    body=db.spaces.map(s=>{const g=ts.filter(x=>x.spaceId===s.id);return g.length?`<div class="group-h">${s.icon} ${esc(s.name)} · ${g.length}</div>${taskTable(g)}`:''}).join('');
+  }else{
+    const ts=db.tasks.filter(x=>taskMatch(x)&&(f.status==='all'||(f.status==='open'?x.status!=='done':x.status===f.status))).sort(taskSort);
+    body=taskTable(ts);
+  }
+  const owners=[...new Set(db.tasks.map(x=>x.owner||'Juju'))].sort();
   return `<div class="wrap wide">
     <h1 class="title">Tarefas</h1>
-    <div class="task-add"><input id="quick" placeholder="Nova tarefa... (Enter)  dica: termine com !alta ou @amanhã"></div>
+    <div class="task-add"><input id="quick" placeholder="Nova tarefa... (Enter)  dica: !urgente, !alta, @hoje, @amanhã, @20/11"></div>
     <div class="filters">
-      <div class="tabs"><button class="${ui.taskView==='board'?'on':''}" onclick="ui.taskView='board';saveUI();render()">Kanban</button><button class="${ui.taskView==='list'?'on':''}" onclick="ui.taskView='list';saveUI();render()">Lista</button></div>
-      <select onchange="ui.taskFilter.space=this.value;saveUI();render()"><option value="all">Todos os espaços</option>${db.spaces.map(s=>`<option value="${s.id}" ${f.space===s.id?'selected':''}>${s.icon} ${esc(s.name)}</option>`).join('')}</select>
+      <div class="tabs">${[['board','Kanban'],['agenda','Agenda'],['frente','Por frente'],['list','Lista']].map(([k,l])=>`<button class="${v===k?'on':''}" onclick="ui.taskView='${k}';saveUI();render()">${l}</button>`).join('')}</div>
+      <select onchange="ui.taskFilter.space=this.value;saveUI();render()"><option value="all">Todas as frentes</option>${db.spaces.map(s=>`<option value="${s.id}" ${f.space===s.id?'selected':''}>${s.icon} ${esc(s.name)}</option>`).join('')}</select>
       <select onchange="ui.taskFilter.project=this.value;saveUI();render()"><option value="all">Todos os projetos</option><option value="none" ${f.project==='none'?'selected':''}>Sem projeto</option>${projects().map(p=>`<option value="${p.id}" ${f.project===p.id?'selected':''}>${esc(p.title||'Sem título')}</option>`).join('')}</select>
-      ${ui.taskView==='list'?`<select onchange="ui.taskFilter.status=this.value;saveUI();render()">${[['open','Abertas'],['all','Todas'],['todo','A fazer'],['doing','Fazendo'],['done','Feitas']].map(([v,l])=>`<option value="${v}" ${f.status===v?'selected':''}>${l}</option>`).join('')}</select>`:''}
-    </div>${board}</div>`;
+      <select onchange="ui.taskFilter.owner=this.value;saveUI();render()"><option value="all">Todos os responsáveis</option>${owners.map(o=>`<option ${f.owner===o?'selected':''}>${esc(o)}</option>`).join('')}</select>
+      ${v==='list'?`<select onchange="ui.taskFilter.status=this.value;saveUI();render()">${[['open','Abertas'],['all','Todas'],['todo','A fazer'],['doing','Fazendo'],['waiting','Aguardando'],['done','Feitas']].map(([k,l])=>`<option value="${k}" ${f.status===k?'selected':''}>${l}</option>`).join('')}</select>`:''}
+    </div>${body}</div>`;
 }
 function parseQuick(txt){
-  let title=txt,priority='média',due='';
+  let title=txt,priority='normal',due='';
+  if(/!urgente\b/i.test(title)){priority='urgente';title=title.replace(/!urgente\b/i,'')}
   if(/!alta\b/i.test(title)){priority='alta';title=title.replace(/!alta\b/i,'')}
   if(/!baixa\b/i.test(title)){priority='baixa';title=title.replace(/!baixa\b/i,'')}
   const d=new Date();
@@ -627,7 +696,8 @@ function parseQuick(txt){
 function addTask(txt,extra={}){
   const q=parseQuick(txt);if(!q.title)return;
   const f=ui.taskFilter;
-  const t={id:uid(),status:'todo',projectId:f.project!=='all'&&f.project!=='none'?f.project:null,spaceId:f.space!=='all'?f.space:db.spaces[0].id,notes:'',createdAt:Date.now(),...q,...extra};
+  const hs=(location.hash||'#/home').startsWith('#/home')&&ui.homeSpace&&ui.homeSpace!=='all'?ui.homeSpace:null;
+  const t={id:uid(),status:'todo',owner:'Juju',projectId:f.project!=='all'&&f.project!=='none'?f.project:null,spaceId:hs||(f.space!=='all'?f.space:db.spaces[0].id),notes:'',createdAt:Date.now(),...q,...extra};
   if(t.projectId&&page(t.projectId))t.spaceId=page(t.projectId).spaceId;
   db.tasks.push(t);save();return t;
 }
@@ -640,7 +710,8 @@ function openTask(id){
     <h1 class="title" contenteditable="true" id="ttitle" style="font-size:24px;margin:14px 0">${esc(t.title)}</h1>
     <div class="field"><label>Status</label><select id="tstatus">${Object.entries(statusLbl).map(([k,v])=>`<option value="${k}" ${t.status===k?'selected':''}>${v}</option>`).join('')}</select></div>
     <div class="field"><label>Prazo</label><input type="date" id="tdue" value="${t.due||''}"></div>
-    <div class="field"><label>Prioridade</label><select id="tprio">${['alta','média','baixa'].map(p=>`<option ${t.priority===p?'selected':''}>${p}</option>`).join('')}</select></div>
+    <div class="field"><label>Prioridade</label><select id="tprio">${PRIOS.map(p=>`<option ${t.priority===p?'selected':''}>${p}</option>`).join('')}</select></div>
+    <div class="field"><label>Tipo</label><select id="ttipo"><option value="">Nenhum</option>${TIPOS.map(p=>`<option ${t.tipo===p?'selected':''}>${p}</option>`).join('')}</select></div>
     <div class="field"><label>Projeto</label><select id="tproj"><option value="">Nenhum</option>${projects().map(p=>`<option value="${p.id}" ${t.projectId===p.id?'selected':''}>${esc(p.title||'Sem título')}</option>`).join('')}</select></div>
     <div class="field"><label>Espaço</label><select id="tspace">${db.spaces.map(s=>`<option value="${s.id}" ${t.spaceId===s.id?'selected':''}>${s.icon} ${esc(s.name)}</option>`).join('')}</select></div>
     <div class="field"><label>Responsável</label><input id="towner" value="${esc(t.owner||'')}" placeholder="Juju"></div>
@@ -649,7 +720,7 @@ function openTask(id){
     <textarea class="notes" id="tnotes">${esc(t.notes||'')}</textarea>
     <div style="margin-top:16px;display:flex;justify-content:space-between"><button class="btn danger" id="tdel">Apagar tarefa</button><button class="btn primary" onclick="closeDrawer()">Pronto</button></div>`;
   d.classList.add('open');
-  const upd=()=>{t.title=$('#ttitle').innerText.trim()||t.title;t.status=$('#tstatus').value;t.due=$('#tdue').value;t.priority=$('#tprio').value;t.projectId=$('#tproj').value||null;t.spaceId=$('#tspace').value;t.owner=$('#towner').value;t.notes=$('#tnotes').value;if(t.projectId)t.spaceId=page(t.projectId).spaceId;save();drawerDirty=true};
+  const upd=()=>{t.title=$('#ttitle').innerText.trim()||t.title;t.status=$('#tstatus').value;t.due=$('#tdue').value;t.priority=$('#tprio').value;t.tipo=$('#ttipo').value;t.projectId=$('#tproj').value||null;t.spaceId=$('#tspace').value;t.owner=$('#towner').value;t.notes=$('#tnotes').value;if(t.projectId)t.spaceId=page(t.projectId).spaceId;save();drawerDirty=true};
   $$('input,select,textarea,#ttitle',d).forEach(el=>{el.addEventListener('input',upd);el.addEventListener('change',upd)});
   $('#tdel').onclick=()=>{if(confirm('Apagar tarefa?')){db.tasks=db.tasks.filter(x=>x!==t);save();closeDrawer()}};
 }
@@ -714,7 +785,8 @@ function viewSettings(){
     <button class="btn" style="margin-top:10px" onclick="db.spaces.push({id:uid(),name:'Novo espaço',icon:'📌'});save();render()">+ Novo espaço</button>
     <h2 class="sec">Backup</h2>
     <button class="btn" onclick="exportData()">Baixar backup (.json)</button>
-    <label class="btn" style="display:inline-block;margin-left:6px">Importar backup<input type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"></label>
+    <label class="btn" style="display:inline-block;margin-left:6px">Restaurar backup<input type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"></label>
+    <label class="btn" style="display:inline-block;margin-left:6px">Juntar dados de um arquivo<input type="file" id="mergefile" accept=".json" style="display:none" onchange="this.files[0]&&this.files[0].text().then(t=>mergeImport(JSON.parse(t)))"></label>
   </div>`;
 }
 async function connect(){
@@ -734,6 +806,23 @@ async function connect(){
   }catch(e){msg.style.color='var(--danger)';msg.textContent='Erro: '+e.message}
 }
 function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,1)],{type:'application/json'}));a.download='caderno-backup-'+today()+'.json';a.click()}
+function mergeImport(d){
+  if(!d||!d.tasks)return alert('Arquivo inválido');
+  const known=new Set(db.tasks.map(t=>t.id));
+  if(d.tasks.every(t=>known.has(t.id)))return toast('Esses dados já estavam importados');
+  const map={};
+  (d.spaces||[]).forEach(s=>{const e=db.spaces.find(x=>x.id===s.id||x.name.toLowerCase()===s.name.toLowerCase());if(e){map[s.id]=e.id}else{db.spaces.push(s);map[s.id]=s.id}});
+  const demo=db.pages.filter(p=>(p.title==='Lançamento Blub+'&&(p.blocks||[]).some(b=>b.text==='Escreva aqui o objetivo do projeto.'))||(p.title==='Ideias de sabores'&&(p.cards||[]).some(c=>c.text==='Maracujá com hortelã')));
+  const demoIds=demo.map(p=>p.id);
+  db.pages=db.pages.filter(p=>!demoIds.includes(p.id));
+  db.tasks=db.tasks.filter(t=>!(t.title==='Fechar data de lançamento do Blub+'&&demoIds.includes(t.projectId)));
+  const pids=new Set(db.pages.map(p=>p.id)),now=Date.now();
+  (d.pages||[]).forEach(p=>{if(pids.has(p.id))return;p.spaceId=map[p.spaceId]||p.spaceId;p.updatedAt=now;db.pages.push(p)});
+  let n=0;d.tasks.forEach(t=>{if(known.has(t.id))return;t.spaceId=map[t.spaceId]||t.spaceId;db.tasks.push(t);n++});
+  const order=(d.spaces||[]).map(s=>map[s.id]);const rk=id=>{const i=order.indexOf(id);return i<0?99:i};
+  db.spaces.sort((a,b)=>rk(a.id)-rk(b.id));
+  migrate();save();render();toast(n+' tarefas importadas');
+}
 function importData(f){if(!f)return;f.text().then(t=>{const d=JSON.parse(t);if(!d.pages)return alert('Arquivo inválido');if(confirm('Substituir tudo pelo backup?')){db=d;save();render()}})}
 
 /* ============ busca ============ */
@@ -775,6 +864,7 @@ function afterRender(r,id){
     if(focusTitle){ti.focus();focusTitle=false}
     const pt=$('#ptask');if(pt)pt.addEventListener('keydown',e=>{if(e.key==='Enter'&&pt.value.trim()){const q=parseQuick(pt.value);db.tasks.push({id:uid(),status:'todo',projectId:p.id,spaceId:p.spaceId,notes:'',createdAt:Date.now(),...q});save();render();$('#ptask').focus()}});
   }
+  if(r==='registro'){const ri=$('#regin');ri.focus();ri.addEventListener('keydown',e=>{if(e.key==='Enter'&&ri.value.trim()){db.inbox.push({id:uid(),text:ri.value.trim(),tipo:'',spaceId:'',date:today(),processed:false,createdAt:Date.now()});save();render()}})}
   if(r==='tasks'&&ui.taskView==='board'){
     $$('.card').forEach(c=>c.addEventListener('dragstart',e=>{e.dataTransfer.setData('text',c.dataset.id)}));
     $$('.col').forEach(col=>{
