@@ -275,6 +275,113 @@ table.tasks tr:hover td{background:#e8e0d2}
 .caminho .q p{margin:0 0 6px}
 .caminho .src{font-size:12px;color:var(--muted)}
 .caminho .src a{text-decoration:underline}
+/* ===== polimento v3 ===== */
+.pill.date.today{background:transparent;border:1.5px solid #161616;color:#161616;padding:1px 8px}
+.cal.week .ev .et input{display:none}
+.cal.week .ev{padding:6px 7px}
+.cal.week .ev .et{font-size:12px;font-weight:600}
+.ag-wrap.nopanel{grid-template-columns:1fr}
+.ag-wrap.nopanel .side-tasks{display:none}
+.side-tasks .fchips{margin:6px 0 4px}.side-tasks .fchips button{padding:4px 10px;font-size:12px}
+.gc-banner .i{margin-right:6px}
+.grid2{grid-template-columns:repeat(auto-fit,minmax(440px,1fr))}
+.row .grow{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.35}
+.row .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.row .meta-r{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;vertical-align:-3px}
+.i.sm{width:15px;height:15px}
+#side nav{scrollbar-width:none}#side nav::-webkit-scrollbar{display:none}
+.nav-item .ic{display:flex;align-items:center;justify-content:center;width:20px}
+.nav-sec .sd{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
+.nav-item .cnt{background:var(--pink);color:#161616;border-radius:999px;font-size:11px;font-weight:600;padding:0 7px}
+#sync{display:flex;gap:8px;align-items:center}
+/* topo */
+.top{display:flex;align-items:center;gap:12px;padding:22px 32px 0;max-width:1500px;margin:0 auto}
+.top .sbox{flex:1;max-width:560px;display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid #ddd3c3;border-radius:999px;padding:9px 16px;color:var(--muted);cursor:text;font-size:14px}
+.top .sbox:hover{border-color:#c9bda9}
+.top .sbox kbd{margin-left:auto;font:inherit;font-size:12px;background:var(--card);border-radius:6px;padding:1px 6px}
+.top .sp{flex:1}
+.top .newbtn{display:flex;align-items:center;gap:6px}
+.burger{display:none}
+/* pílulas: hierarquia */
+.pill{background:#ebe3d6;color:#5d574d;font-weight:500;padding:2px 9px}
+.pill.date{background:transparent;color:var(--muted);padding:2px 4px}
+.pill.date.late{background:#fbe1e1;color:#b33a3a;padding:2px 8px}
+.pill.today{background:#161616;color:#fff}
+.sp-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#5d574d;white-space:nowrap}
+.sp-tag i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.pill.src{background:var(--accent-soft);color:#7a3d5c}
+/* checkbox redondo */
+input[type=checkbox]{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:1.6px solid #b4a994;border-radius:50%;background:var(--panel);cursor:pointer;flex-shrink:0;margin:0;display:inline-grid;place-content:center;transition:all .12s}
+input[type=checkbox]:hover{border-color:#161616}
+input[type=checkbox]:checked{background:#161616 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/11px no-repeat;border-color:#161616}
+.block.todo input{margin-top:3px}
+/* linhas com ações rápidas */
+.row{padding:8px 4px;border-radius:10px;gap:10px;position:relative}
+.row:hover{background:rgba(255,255,255,.55)}
+.row .ra{display:none;gap:4px}
+.row:hover .ra{display:flex}
+.row:hover .hide-h{display:none}
+.ra button{border:0;background:#161616;color:#fff;border-radius:999px;font-size:11.5px;padding:3px 9px}
+.ra button.l{background:var(--panel);color:#161616;border:1px solid var(--line)}
+.box h3{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.box h3 .h3l{display:flex;align-items:center;gap:8px}
+.box h3 .c{font-size:13px;font-weight:500;color:var(--muted)}
+.more{display:block;text-align:center;font-size:13px;color:#161616;padding:10px 0 2px;cursor:pointer;font-weight:500}
+.more:hover{text-decoration:underline}
+/* stats */
+.stats{grid-template-columns:repeat(4,1fr)}
+.stat{display:flex;flex-direction:column;gap:2px;transition:transform .12s}
+.stat:hover{transform:translateY(-2px)}
+.stat h4{display:flex;align-items:center;gap:8px;font-size:15px}
+.stat .ico{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.55);display:grid;place-items:center}
+.stat b{font-size:42px;line-height:1.1;margin-top:6px}
+.stat.dark{background:#161616;color:#fff}.stat.dark small{color:#bdb6aa}.stat.dark .ico{background:#2a2a2a}
+.stat .nx{font-size:14px;line-height:1.35;margin-top:8px;font-weight:500}
+.fchips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.fchips button{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 14px;font-size:13.5px;color:#161616}
+.fchips button i{width:9px;height:9px;border-radius:50%}
+.fchips button b{font-weight:600}
+.fchips button small{color:#b33a3a;font-size:12px}
+.fchips button.on{background:#161616;color:#fff;border-color:#161616}
+.fchips button.on small{color:#f4b8d6}
+/* kanban */
+.board{grid-template-columns:repeat(3,minmax(240px,1fr)) 230px}
+.board.showdone{grid-template-columns:repeat(4,minmax(220px,1fr))}
+.col h3{font-size:14px;color:#161616;align-items:center}
+.col h3 span:last-child{background:var(--panel);border-radius:999px;padding:0 9px;font-size:12px;color:var(--muted)}
+.card{padding:11px 13px;font-size:14px;line-height:1.4;transition:box-shadow .12s}
+.card:hover{box-shadow:0 4px 14px rgba(60,40,10,.08)}
+.card .sub{gap:8px;align-items:center;margin-top:8px}
+.col.done .card{opacity:.7}
+/* tabela */
+table.tasks td{padding:9px 10px}
+table.tasks .ttl{font-weight:500}
+/* agenda: títulos quebram linha */
+.ev .et span{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ev{font-size:12px}
+/* toast com desfazer */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#161616;color:#fff;padding:10px 12px 10px 18px;border-radius:999px;font-size:14px;z-index:99;display:flex;gap:14px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:tin .18s ease}
+.toast button{border:0;background:var(--pink);color:#161616;border-radius:999px;padding:4px 12px;font-weight:600;font-size:13px}
+@keyframes tin{from{opacity:0;transform:translate(-50%,8px)}}
+/* drawer */
+#drawer{padding:30px 30px 40px}
+#drawer .field label{font-size:13px}
+/* foco visível */
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #161616;outline-offset:2px}
+@media (max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.board,.board.showdone{grid-template-columns:repeat(4,minmax(240px,1fr))}}
+@media (max-width:820px){
+  .top{padding:12px 16px 0}.burger{display:grid}.top .newbtn span{display:none}
+  .stats{grid-template-columns:1fr 1fr}.stat b{font-size:32px}
+  .row .ra{display:none!important}
+  .topbar{display:none}
+  .top .sbox{flex:0 0 auto;padding:10px 12px}.top .sbox span,.top .sbox kbd{display:none}
+  .caminho{flex-direction:column;gap:10px;padding:16px 18px}
+  .caminho .q{font-size:15px}
+  .fchips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.fchips button{flex-shrink:0}
+  .grid2{grid-template-columns:1fr}
+  .stat h4{font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -386,6 +493,23 @@ async function pullQuiet(){ // checa se mudou em outro aparelho (ou se a Jaque g
   try{const r=await gh('GET');if(!r.ok)return;const j=await r.json();if(j.sha!==sha){await pull()}}catch(e){}
 }
 
+/* ============ ícones (traço fino) ============ */
+const IC={search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',home:'<rect width="7" height="9" x="3" y="3" rx="1.5"/><rect width="7" height="5" x="14" y="3" rx="1.5"/><rect width="7" height="9" x="14" y="12" rx="1.5"/><rect width="7" height="5" x="3" y="16" rx="1.5"/>',
+cal:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',tasks:'<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8M13 12h8M13 18h8"/>',
+mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/>',inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+gear:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',plus:'<path d="M5 12h14M12 5v14"/>',
+flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',hour:'<path d="M5 22h14M5 2h14M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/>',
+target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+spark:'<path d="M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'};
+const I=(n,c='')=>`<svg class="i ${c}" viewBox="0 0 24 24">${IC[n]||''}</svg>`;
+const spTag=id=>{const sp=space(id);return sp?`<span class="sp-tag"><i style="background:${spaceColor(id)}"></i>${esc(sp.name)}</span>`:''};
+const datePill=(x,t)=>x.due?`<span class="pill date ${x.due<t&&x.status!=='done'?'late':''} ${x.due===t?'today':''}">${x.due===t?'hoje':fmtDate(x.due)}</span>`:'';
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function setDue(id,v){const t=db.tasks.find(x=>x.id===id);const old=t.due;t.due=v==='today'?today():v==='tomorrow'?addDays(1):v==='none'?'':v;save();render();toast(v==='none'?'Prazo removido':'Prazo: '+(v==='today'?'hoje':'amanhã'),()=>{t.due=old;save();render()})}
+const quickActs=id=>`<span class="ra"><button onclick="event.stopPropagation();setDue('${id}','today')">Hoje</button><button class="l" onclick="event.stopPropagation();setDue('${id}','tomorrow')">Amanhã</button><button class="l" title="Tirar prazo" onclick="event.stopPropagation();setDue('${id}','none')">Sem prazo</button></span>`;
+function newTask(){const fs=(location.hash||'').startsWith('#/home')&&ui.homeSpace&&ui.homeSpace!=='all'?ui.homeSpace:(ui.taskFilter.space!=='all'?ui.taskFilter.space:db.spaces[0].id);const t={id:uid(),title:'Nova tarefa',status:'todo',owner:'Juju',projectId:null,spaceId:fs,due:'',priority:'normal',notes:'',createdAt:Date.now()};db.tasks.push(t);save();openTask(t.id);setTimeout(()=>{const el=$('#ttitle');if(el){el.focus();document.execCommand('selectAll',false,null)}},60)}
+
 /* ============ helpers de dados ============ */
 const page=id=>db.pages.find(p=>p.id===id);
 const space=id=>db.spaces.find(s=>s.id===id);
@@ -421,7 +545,7 @@ function render(){
   const h=location.hash||'#/home';const [_,r,id]=h.split('/');
   closeDrawer(true);
   const main=$('#main');
-  const top=`<div class="topbar"><button class="btn ghost" onclick="$('#side').classList.toggle('open')">☰</button><b>Caderno</b></div>`;
+  const top=`<div class="top"><button class="iconbtn burger" onclick="$('#side').classList.toggle('open')">${I('menu')}</button><div class="sbox" onclick="openSearch()">${I('search','sm')}<span>Buscar tarefas, páginas, reuniões...</span><kbd>⌘K</kbd></div><div class="sp"></div><button class="pillbtn newbtn" onclick="newTask()">${I('plus','sm')}<span>Nova tarefa</span></button></div>`;
   let html='';
   if(r==='page'&&page(id))html=viewPage(page(id));
   else if(r==='tasks')html=viewTasks();
@@ -439,7 +563,7 @@ function render(){
 /* ============ sidebar ============ */
 function renderSide(){
   const h=location.hash||'#/home';
-  const item=(href,ic,lbl)=>`<a class="nav-item ${h===href?'active':''}" href="${href}"><span class="ic">${ic}</span><span class="lbl">${lbl}</span></a>`;
+  const item=(href,ic,lbl,cnt)=>`<a class="nav-item ${h===href?'active':''}" href="${href}"><span class="ic">${I(ic)}</span><span class="lbl">${lbl}</span>${cnt?`<span class="cnt">${cnt}</span>`:''}</a>`;
   const tree=(spaceId,parentId)=>db.pages.filter(p=>p.spaceId===spaceId&&p.parentId===parentId&&p.type!=='project').map(p=>{
     const kids=db.pages.some(k=>k.parentId===p.id);
     return `<div class="nav-item ${h==='#/page/'+p.id?'active':''}" onclick="go('#/page/${p.id}')">
@@ -454,21 +578,21 @@ function renderSide(){
   $('#side').innerHTML=`
     <div class="brand"><span class="logo">C</span>Caderno</div>
     <nav>
-      <div class="nav-item" onclick="openSearch()"><span class="ic">🔍</span><span class="lbl">Buscar</span><span style="color:var(--muted);font-size:12px">⌘K</span></div>
-      ${item('#/home','🏠','Início')}
-      ${item('#/agenda','📅','Agenda')}
-      ${item('#/tasks','✅','Tarefas')}
-      ${item('#/meetings','🎙️','Reuniões')}
-      ${item('#/registro','📥','Registro do dia'+(db.inbox.filter(i=>!i.processed).length?' ('+db.inbox.filter(i=>!i.processed).length+')':''))}
+      <div class="nav-sec" style="margin-top:4px"><span>Geral</span></div>
+      ${item('#/home','home','Início')}
+      ${item('#/agenda','cal','Agenda',db.tasks.filter(t=>t.block&&t.block.date===today()&&t.status!=='done').length||'')}
+      ${item('#/tasks','tasks','Tarefas')}
+      ${item('#/meetings','mic','Reuniões')}
+      ${item('#/registro','inbox','Registro do dia',db.inbox.filter(i=>!i.processed).length||'')}
       ${db.spaces.map(s=>`
-        <div class="nav-sec"><span>${s.icon} ${esc(s.name)}</span><button title="Nova página" onclick="newMenu(event,'${s.id}')">+</button></div>
+        <div class="nav-sec"><span><span class="sd" style="background:${spaceColor(s.id)}"></span>${esc(s.name)}</span><button title="Nova página, projeto ou brainstorm" onclick="newMenu(event,'${s.id}')">+</button></div>
         ${projs(s.id)}
         ${tree(s.id,null)}
       `).join('')}
       <div style="height:12px"></div>
-      ${item('#/settings','⚙️','Configurações')}
+      ${item('#/settings','gear','Configurações')}
     </nav>
-    <div id="sync"><span class="dot"></span><span>${ghOn()?'Conectado':'Só neste navegador'}</span></div>`;
+    <div id="sync"><span class="dot"></span><span>${ghOn()?'Salvo no GitHub':'Só neste navegador'}</span></div>`;
 }
 function toggleExp(id){ui.expanded[id]=!ui.expanded[id];saveUI();renderSide()}
 function newMenu(e,spaceId){
@@ -499,34 +623,39 @@ function viewHome(){
   const inSp=x=>fs==='all'||x.spaceId===fs;
   const open=db.tasks.filter(x=>x.status!=='done');
   const mine=open.filter(inSp);
-  const urg=mine.filter(x=>x.priority==='urgente'||(x.due&&x.due<t)).sort(taskSort);
-  const tod=mine.filter(x=>x.due===t&&x.priority!=='urgente');
-  const prio=mine.filter(x=>x.priority==='alta'&&!urg.includes(x)&&!tod.includes(x)).sort(taskSort).slice(0,12);
+  const isUrg=x=>x.priority==='urgente'||(x.due&&x.due<t);
+  const urg=mine.filter(isUrg).sort(taskSort);
+  const tod=mine.filter(x=>x.due===t&&!isUrg(x));
+  const prio=[...tod,...mine.filter(x=>x.priority==='alta'&&!isUrg(x)&&x.due!==t).sort(taskSort)];
   const waiting=mine.filter(x=>x.status==='waiting').sort(taskSort);
-  const mts=[...db.meetings].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,5);
+  const doing=mine.filter(x=>x.status==='doing');
+  const mts=[...db.meetings].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,4);
   const inboxN=db.inbox.filter(i=>!i.processed).length;
+  const nowM=new Date().getHours()*60+new Date().getMinutes();
+  const blocks=db.tasks.filter(x=>x.block&&x.block.date===t&&x.status!=='done').sort((a,b)=>a.block.start.localeCompare(b.block.start));
+  const next=blocks.find(x=>hm2m(x.block.start)+x.block.dur>nowM);
   const h=new Date().getHours();
   const hi=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
-  const trow=x=>{const sp=space(x.spaceId);return `<div class="row" onclick="openTask('${x.id}')"><input type="checkbox" onclick="event.stopPropagation();toggleTask('${x.id}')"><span class="grow">${esc(x.title)}</span>${fs==='all'&&sp?`<span title="${esc(sp.name)}">${sp.icon}</span>`:''}${prioPill(x.priority)}${x.due?`<span class="pill ${x.due<t?'late':''}">${fmtDate(x.due)}</span>`:''}</div>`};
-  const pulse=db.spaces.map(s=>{const o=open.filter(x=>x.spaceId===s.id);const u=o.filter(x=>x.priority==='urgente'||(x.due&&x.due<t)).length;
-    return `<div class="pc" style="background:${spaceColor(s.id)}" onclick="ui.homeSpace='${s.id}';saveUI();render()"><small>${s.icon} ${esc(s.name)}</small><b>${o.length}</b><small>${u?`<span style="color:var(--danger)">${u} urgentes/atrasadas</span>`:'em dia'}</small></div>`}).join('');
+  const trow=x=>`<div class="row" onclick="openTask('${x.id}')"><input type="checkbox" onclick="event.stopPropagation();toggleTask('${x.id}')">${fs==='all'?`<span class="dot" title="${esc(space(x.spaceId)?.name||'')}" style="background:${spaceColor(x.spaceId)}"></span>`:''}<span class="grow">${esc(x.title)}</span><span class="meta-r hide-h">${prioPill(x.priority)}${datePill(x,t)}</span>${quickActs(x.id)}</div>`;
+  const list=(arr,n,emptyMsg,goFn)=>arr.slice(0,n).map(trow).join('')+(arr.length>n?`<a class="more" onclick="${goFn}">Ver todas as ${arr.length}</a>`:'')||`<div class="empty">${emptyMsg}</div>`;
+  const chips=`<div class="fchips"><button class="${fs==='all'?'on':''}" onclick="ui.homeSpace='all';saveUI();render()">Todas <b>${open.length}</b></button>${db.spaces.map(s=>{const o=open.filter(x=>x.spaceId===s.id);const u=o.filter(isUrg).length;return `<button class="${fs===s.id?'on':''}" onclick="ui.homeSpace='${s.id}';saveUI();render()"><i style="background:${spaceColor(s.id)}"></i>${esc(s.name)} <b>${o.length}</b>${u?`<small>${u} atrasadas</small>`:''}</button>`}).join('')}</div>`;
   return `<div class="wrap wide">
     <h1 class="title">${hi}, Juju</h1>
-    <div class="meta">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})} · ${open.length} tarefas abertas${inboxN?` · <a href="#/registro" style="color:var(--accent)">${inboxN} no registro pra processar</a>`:''}</div>
+    <div class="meta">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}${inboxN?` · <a href="#/registro" style="text-decoration:underline">${inboxN} no registro pra processar</a>`:''}</div>
     <div class="caminho" id="caminho"></div>
     <div class="stats">
-      <div class="stat" style="background:var(--pink)" onclick="ui.taskView='agenda';saveUI();go('#/tasks')"><h4>🔥 Urgentes e atrasadas</h4><b>${open.filter(x=>x.priority==='urgente'||(x.due&&x.due<t)).length}</b><small>tarefas pedindo atenção</small></div>
-      <div class="stat" style="background:var(--blue)" onclick="ui.taskView='board';saveUI();go('#/tasks')"><h4>⚡ Fazendo agora</h4><b>${open.filter(x=>x.status==='doing').length}</b><small>em andamento</small></div>
-      <div class="stat" style="background:var(--yellow)" onclick="go('#/agenda')"><h4>📅 Encaixadas hoje</h4><b>${db.tasks.filter(x=>x.block&&x.block.date===t).length}</b><small>blocos na agenda de hoje</small></div>
+      <div class="stat" style="background:var(--pink)" onclick="ui.taskView='agenda';saveUI();go('#/tasks')"><h4><span class="ico">${I('flame','sm')}</span>Urgentes e atrasadas</h4><b>${urg.length}</b><small>${fs==='all'?'em todas as frentes':'nesta frente'}</small></div>
+      <div class="stat" style="background:var(--blue)" onclick="ui.taskView='board';saveUI();go('#/tasks')"><h4><span class="ico">${I('zap','sm')}</span>Fazendo</h4><b>${doing.length}</b><small>em andamento</small></div>
+      <div class="stat" style="background:var(--yellow)" onclick="ui.taskView='board';saveUI();go('#/tasks')"><h4><span class="ico">${I('hour','sm')}</span>Aguardando</h4><b>${waiting.length}</b><small>dependem de alguém</small></div>
+      <div class="stat dark" onclick="go('#/agenda')"><h4><span class="ico">${I('clock','sm')}</span>Agora na agenda</h4>${next?`<div class="nx">${next.block.start} · ${esc(next.title)}</div><small>${blocks.length} blocos hoje</small>`:`<div class="nx">Nada encaixado ainda</div><small>abra a Agenda e use o ✨ Encaixar</small>`}</div>
     </div>
-    <div class="pulse">${pulse}</div>
-    <div class="chips"><button class="${fs==='all'?'on':''}" onclick="ui.homeSpace='all';saveUI();render()">Todas as frentes</button>${db.spaces.map(s=>`<button class="${fs===s.id?'on':''}" onclick="ui.homeSpace='${s.id}';saveUI();render()">${s.icon} ${esc(s.name)}</button>`).join('')}</div>
-    <div class="task-add"><input id="quick" placeholder="Nova tarefa para hoje... (Enter)"></div>
+    ${chips}
+    <div class="task-add"><input id="quick" placeholder="Anota uma tarefa pra hoje e aperta Enter  (!urgente, !alta, @amanhã, @20/11)"></div>
     <div class="grid2">
-      <div class="box"><h3>🔥 Alertas: urgentes e atrasadas</h3>${urg.map(trow).join('')||'<div class="empty">Nada pegando fogo.</div>'}</div>
-      <div class="box"><h3>📌 Minhas prioridades</h3>${[...tod,...prio].map(trow).join('')||'<div class="empty">Sem prioridade alta aberta.</div>'}</div>
-      <div class="box"><h3>⏳ Aguardando alguém</h3>${waiting.map(trow).join('')||'<div class="empty">Nada parado esperando.</div>'}</div>
-      <div class="box"><h3>🎙️ Reuniões recentes</h3>${mts.map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span class="grow">${esc(m.title)}</span><span class="pill">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ainda.</div>'}</div>
+      <div class="box"><h3><span class="h3l">${I('flame')}Pegando fogo</span><span class="c">${urg.length}</span></h3>${list(urg,7,'Nada pegando fogo. Boa.',"ui.taskView='agenda';saveUI();go('#/tasks')")}</div>
+      <div class="box"><h3><span class="h3l">${I('target')}Prioridades</span><span class="c">${prio.length}</span></h3>${list(prio,7,'Sem prioridade alta aberta.',"ui.taskView='list';saveUI();go('#/tasks')")}</div>
+      <div class="box"><h3><span class="h3l">${I('hour')}Aguardando alguém</span><span class="c">${waiting.length}</span></h3>${list(waiting,5,'Ninguém te devendo nada.',"ui.taskView='board';saveUI();go('#/tasks')")}</div>
+      <div class="box"><h3><span class="h3l">${I('mic')}Reuniões recentes</span></h3>${mts.map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span class="grow">${esc(m.title)}</span><span class="pill date">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ainda. Peça pra Jaque processar as do Wispr.</div>'}</div>
     </div></div>`;
 }
 
@@ -535,7 +664,7 @@ const REG_TIPOS=['Ideia','Recado','Reunião','Aprendizado','Outro'];
 function viewRegistro(){
   const items=[...db.inbox].sort((a,b)=>(a.processed-b.processed)||b.createdAt-a.createdAt);
   return `<div class="wrap">
-    <h1 class="title">📥 Registro do dia</h1>
+    <h1 class="title">Registro do dia</h1>
     <div class="meta">Despeja tudo aqui na hora, sem pensar. No fim do dia, processa: vira tarefa ou marca como processado.</div>
     <div class="task-add"><input id="regin" placeholder="Anota qualquer coisa... (Enter)"></div>
     ${items.map(i=>{const sp=space(i.spaceId);return `<div class="row" style="cursor:default;${i.processed?'opacity:.5':''}">
@@ -748,11 +877,11 @@ function taskTable(ts){
   const t=today();
   return `<table class="tasks">${ts.map(x=>{const pj=page(x.projectId);return `<tr class="${x.status}">
     <td class="chk"><input type="checkbox" ${x.status==='done'?'checked':''} onclick="toggleTask('${x.id}')"></td>
-    <td class="ttl" onclick="openTask('${x.id}')">${esc(x.title)} ${x.source?'<span class="pill src">🎙️ reunião</span>':''}</td>
-    <td>${pj?`<span class="pill">${pj.icon||''} ${esc(pj.title)}</span>`:''}</td>
+    <td class="ttl" onclick="openTask('${x.id}')">${esc(x.title)} ${x.source?'<span class="pill src">reunião</span>':''}</td>
+    <td>${spTag(x.spaceId)}${pj?` <span class="pill">${esc(pj.title)}</span>`:''}</td>
     <td><span class="pill ${x.status}">${statusLbl[x.status]}</span></td>
     <td>${prioPill(x.priority)}${x.tipo?` <span class="pill tipo">${esc(x.tipo)}</span>`:''}</td>
-    <td style="text-align:right">${x.due?`<span class="pill ${x.due<t&&x.status!=='done'?'late':''}">${fmtDate(x.due)}</span>`:''}</td></tr>`}).join('')}</table>`;
+    <td style="text-align:right;white-space:nowrap">${datePill(x,t)}</td></tr>`}).join('')}</table>`;
 }
 function filteredTasks(){
   const f=ui.taskFilter;
@@ -762,13 +891,13 @@ function taskMatch(x){const f=ui.taskFilter;return (f.space==='all'||x.spaceId==
 function viewTasks(){
   const f=ui.taskFilter;const t=today();const v=ui.taskView;
   const card=x=>{const pj=page(x.projectId);const sp=space(x.spaceId);return `<div class="card" draggable="true" data-id="${x.id}" onclick="openTask('${x.id}')">${esc(x.title)}
-      <div class="sub">${f.space==='all'&&sp?`<span class="pill">${sp.icon} ${esc(sp.name)}</span>`:''}${pj?`<span class="pill">${pj.icon||''} ${esc(pj.title)}</span>`:''}${prioPill(x.priority)}${x.owner&&x.owner!=='Juju'?`<span class="pill">👤 ${esc(x.owner)}</span>`:''}${x.due?`<span class="pill ${x.due<t&&x.status!=='done'?'late':''}">${fmtDate(x.due)}</span>`:''}${x.source?'<span class="pill src">🎙️</span>':''}</div></div>`};
+      <div class="sub">${f.space==='all'?spTag(x.spaceId):''}${pj?`<span class="pill">${esc(pj.title.length>22?pj.title.slice(0,20)+'…':pj.title)}</span>`:''}${prioPill(x.priority)}${x.owner&&x.owner!=='Juju'?`<span class="pill">${esc(x.owner)}</span>`:''}${datePill(x,t)}${x.source?'<span class="pill src">reunião</span>':''}</div></div>`};
   let body='';
   if(v==='board'){
-    body=`<div class="board">${Object.keys(statusLbl).map(s=>{
+    body=`<div class="board ${ui.showDone?'showdone':''}">${Object.keys(statusLbl).map(s=>{
       let col=db.tasks.filter(x=>x.status===s&&taskMatch(x)).sort(taskSort);
-      const total=col.length; if(s==='done')col=col.sort((a,b)=>(b.doneAt||0)-(a.doneAt||0)).slice(0,25);
-      return `<div class="col" data-s="${s}"><h3><span>${statusLbl[s]}</span><span>${total}</span></h3>${col.map(card).join('')}${s==='done'&&total>25?`<div class="empty">+${total-25} na lista</div>`:''}</div>`}).join('')}</div>`;
+      const total=col.length; if(s==='done')col=col.sort((a,b)=>(b.doneAt||0)-(a.doneAt||0)).slice(0,ui.showDone?25:5);
+      return `<div class="col ${s}" data-s="${s}"><h3><span>${statusLbl[s]}</span><span>${total}</span></h3>${col.map(card).join('')}${s==='done'?`<a class="more" onclick="ui.showDone=!ui.showDone;saveUI();render()">${ui.showDone?'Recolher':'Ver mais feitas'}</a>`:''}${!col.length&&s!=='done'?'<div class="empty">Arraste tarefas pra cá</div>':''}</div>`}).join('')}</div>`;
   }else if(v==='agenda'){
     const ts=db.tasks.filter(x=>x.status!=='done'&&taskMatch(x)).sort(taskSort);
     const d=new Date();const add=n=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
@@ -777,7 +906,7 @@ function viewTasks(){
     body=groups.map(([l,fn,c])=>{const g=ts.filter(fn);return g.length?`<div class="group-h ${c||''}">${l} · ${g.length}</div>${taskTable(g)}`:''}).join('');
   }else if(v==='frente'){
     const ts=db.tasks.filter(x=>x.status!=='done'&&taskMatch(x)).sort(taskSort);
-    body=db.spaces.map(s=>{const g=ts.filter(x=>x.spaceId===s.id);return g.length?`<div class="group-h">${s.icon} ${esc(s.name)} · ${g.length}</div>${taskTable(g)}`:''}).join('');
+    body=db.spaces.map(s=>{const g=ts.filter(x=>x.spaceId===s.id);return g.length?`<div class="group-h"><span class="sp-tag" style="font-size:13px"><i style="background:${spaceColor(s.id)}"></i>${esc(s.name)}</span> · ${g.length}</div>${taskTable(g)}`:''}).join('');
   }else{
     const ts=db.tasks.filter(x=>taskMatch(x)&&(f.status==='all'||(f.status==='open'?x.status!=='done':x.status===f.status))).sort(taskSort);
     body=taskTable(ts);
@@ -788,7 +917,7 @@ function viewTasks(){
     <div class="task-add"><input id="quick" placeholder="Nova tarefa... (Enter)  dica: !urgente, !alta, @hoje, @amanhã, @20/11"></div>
     <div class="filters">
       <div class="tabs">${[['board','Kanban'],['agenda','Agenda'],['frente','Por frente'],['list','Lista']].map(([k,l])=>`<button class="${v===k?'on':''}" onclick="ui.taskView='${k}';saveUI();render()">${l}</button>`).join('')}</div>
-      <select onchange="ui.taskFilter.space=this.value;saveUI();render()"><option value="all">Todas as frentes</option>${db.spaces.map(s=>`<option value="${s.id}" ${f.space===s.id?'selected':''}>${s.icon} ${esc(s.name)}</option>`).join('')}</select>
+      <select onchange="ui.taskFilter.space=this.value;saveUI();render()"><option value="all">Todas as frentes</option>${db.spaces.map(s=>`<option value="${s.id}" ${f.space===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
       <select onchange="ui.taskFilter.project=this.value;saveUI();render()"><option value="all">Todos os projetos</option><option value="none" ${f.project==='none'?'selected':''}>Sem projeto</option>${projects().map(p=>`<option value="${p.id}" ${f.project===p.id?'selected':''}>${esc(p.title||'Sem título')}</option>`).join('')}</select>
       <select onchange="ui.taskFilter.owner=this.value;saveUI();render()"><option value="all">Todos os responsáveis</option>${owners.map(o=>`<option ${f.owner===o?'selected':''}>${esc(o)}</option>`).join('')}</select>
       ${v==='list'?`<select onchange="ui.taskFilter.status=this.value;saveUI();render()">${[['open','Abertas'],['all','Todas'],['todo','A fazer'],['doing','Fazendo'],['waiting','Aguardando'],['done','Feitas']].map(([k,l])=>`<option value="${k}" ${f.status===k?'selected':''}>${l}</option>`).join('')}</select>`:''}
@@ -813,7 +942,7 @@ function addTask(txt,extra={}){
   if(t.projectId&&page(t.projectId))t.spaceId=page(t.projectId).spaceId;
   db.tasks.push(t);save();return t;
 }
-function toggleTask(id){const t=db.tasks.find(x=>x.id===id);t.status=t.status==='done'?'todo':'done';if(t.status==='done')t.doneAt=Date.now();save();render()}
+function toggleTask(id){const t=db.tasks.find(x=>x.id===id);const prev=t.status;t.status=t.status==='done'?'todo':'done';if(t.status==='done')t.doneAt=Date.now();save();render();if(t.status==='done')toast('Feito: '+(t.title.length>40?t.title.slice(0,38)+'…':t.title),()=>{t.status=prev;save();render()})}
 function openTask(id){
   const t=db.tasks.find(x=>x.id===id);if(!t)return;
   const d=$('#drawer');
@@ -1069,29 +1198,30 @@ function viewAgenda(){
   const f=d=>d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
   const range=days.length>1?f(days[0])+' a '+f(days[6]):days[0].toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
   const h=new Date().getHours();
-  const banner=!st.gcalClientId?`<div class="gc-banner"><span>📅 Conecte seu Google Calendar pra ver suas reuniões aqui e mandar os blocos de tarefa pra sua agenda.</span><button class="pillbtn" onclick="go('#/settings')">Conectar</button></div>`
-    :!gOn()?`<div class="gc-banner"><span>📅 Entre com o Google pra carregar sua agenda${gErr?' (erro: '+esc(gErr)+')':''}.</span><button class="pillbtn" onclick="gLogin()">Entrar com Google</button></div>`:'';
+  const banner=!st.gcalClientId?`<div class="gc-banner"><span>${I('cal','sm')}Conecte seu Google Calendar pra ver suas reuniões aqui e mandar os blocos de tarefa pra sua agenda.</span><button class="pillbtn" onclick="go('#/settings')">Conectar</button></div>`
+    :!gOn()?`<div class="gc-banner"><span>${I('cal','sm')}Entre com o Google pra carregar sua agenda${gErr?' (erro: '+esc(gErr)+')':''}.</span><button class="pillbtn" onclick="gLogin()">Entrar com Google</button></div>`:'';
   const fs=ui.agSpace||'all';
   const pending=db.tasks.filter(t=>t.status!=='done'&&(!t.block||t.block.date<td)&&(fs==='all'||t.spaceId===fs)).sort((a,b)=>rankTask(a)-rankTask(b)).slice(0,60);
   return `<div class="wrap wide" style="max-width:1500px">
-    <h1 class="title">${h<12?'Bom dia':h<18?'Boa tarde':'Boa noite'}, Juju. Cada minuto conta.</h1>
+    <h1 class="title">${ui.agView==='day'?'Seu dia':'Sua semana'}, Juju</h1>
     <div class="ag-head">
       <div class="l"><button class="iconbtn" onclick="agShift(-1)">‹</button><button class="pillbtn">${range}</button><button class="iconbtn" onclick="agShift(1)">›</button></div>
       <div class="r">
         <button class="pillbtn light" onclick="ui.agDate=today();saveUI();render()">Hoje</button>
         <div class="tabs"><button class="${ui.agView==='day'?'on':''}" onclick="ui.agView='day';saveUI();render()">Dia</button><button class="${ui.agView!=='day'?'on':''}" onclick="ui.agView='week';saveUI();render()">Semana</button></div>
         ${gOn()?`<button class="iconbtn" title="Atualizar agenda" onclick="gCache={};render()">↻</button>`:''}
-        <button class="pillbtn pink" onclick="agAuto()">✨ Encaixar ${ui.agView==='day'&&ui.agDate&&ui.agDate!==td?'este dia':'meu dia'}</button>
+        <button class="pillbtn pink" onclick="agAuto()">${I('spark','sm')} Encaixar ${ui.agView==='day'&&ui.agDate&&ui.agDate!==td?'este dia':'meu dia'}</button>
         <button class="pillbtn light" onclick="undoAuto(ui.agView==='day'&&ui.agDate?ui.agDate:td);render()">Desfazer encaixe</button>
+        <button class="pillbtn light" onclick="ui.agPanel=!ui.agPanel;saveUI();render()">${ui.agPanel===false?'Mostrar tarefas':'Esconder tarefas'}</button>
       </div>
     </div>
     ${banner}
-    <div class="ag-wrap">
-      <div class="cal" id="cal"><div class="empty">Carregando...</div></div>
+    <div class="ag-wrap ${ui.agPanel===false?'nopanel':''}">
+      <div class="cal ${ui.agView==='day'?'':'week'}" id="cal"><div class="empty">Carregando...</div></div>
       <aside class="side-tasks">
         <h3>Pra encaixar</h3>
         <div class="hint" style="margin:0 0 8px">Arraste uma tarefa pra um horário. Clique num horário vazio pra criar uma tarefa ali.</div>
-        <div class="chips" style="margin:0 0 4px"><button class="${fs==='all'?'on':''}" onclick="ui.agSpace='all';saveUI();render()">Todas</button>${db.spaces.map(s=>`<button class="${fs===s.id?'on':''}" onclick="ui.agSpace='${s.id}';saveUI();render()">${s.icon}</button>`).join('')}</div>
+        <div class="fchips"><button class="${fs==='all'?'on':''}" onclick="ui.agSpace='all';saveUI();render()">Todas</button>${db.spaces.map(s=>`<button class="${fs===s.id?'on':''}" title="${esc(s.name)}" onclick="ui.agSpace='${s.id}';saveUI();render()"><i style="background:${spaceColor(s.id)}"></i>${esc(s.name)}</button>`).join('')}</div>
         ${pending.map(t=>`<div class="st-item" draggable="true" data-task="${t.id}" onclick="openTask('${t.id}')"><span class="dot" style="background:${spaceColor(t.spaceId)}"></span><span style="flex:1">${esc(t.title)}<div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">${prioPill(t.priority)}${t.due?`<span class="pill ${t.due<td?'late':''}">${fmtDate(t.due)}</span>`:''}<span class="pill">${defDur(t)} min</span></div></span></div>`).join('')||'<div class="empty">Tudo encaixado.</div>'}
       </aside>
     </div></div>`;
@@ -1166,7 +1296,7 @@ async function loadCaminho(){
 }
 
 /* ============ toast ============ */
-function toast(msg){const t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d1c1a;color:#fff;padding:8px 16px;border-radius:8px;font-size:14px;z-index:99';document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+let toastT=null;function toast(msg,undo){$$('.toast').forEach(x=>x.remove());clearTimeout(toastT);const t=document.createElement('div');t.className='toast';t.innerHTML=`<span>${esc(msg)}</span>${undo?'<button>Desfazer</button>':''}`;if(undo)t.querySelector('button').onclick=()=>{t.remove();undo()};document.body.appendChild(t);toastT=setTimeout(()=>t.remove(),undo?5000:2200)}
 
 /* ============ ligações pós-render ============ */
 function afterRender(r,id){
