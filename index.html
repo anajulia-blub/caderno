@@ -780,7 +780,7 @@ function viewHome(){
   const list=(arr,n,emptyMsg,goFn)=>arr.slice(0,n).map(trow).join('')+(arr.length>n?`<a class="more" onclick="${goFn}">Ver todas as ${arr.length}</a>`:'')||`<div class="empty">${emptyMsg}</div>`;
   const nxt7=(()=>{const d=new Date();d.setDate(d.getDate()+7);return dstr(d)})();
   const late=mine.filter(x=>x.due&&x.due<t).sort(taskSort);
-  const hoje=[...late,...mine.filter(x=>x.due===t||(x.priority==='urgente'&&!(x.due&&x.due<t)&&x.due!==t&&(!x.due||x.due<=nxt7)))].filter((x,i,a)=>a.indexOf(x)===i);
+  const hoje=[...late,...mine.filter(x=>x.due===t).sort(taskSort),...mine.filter(x=>!x.due&&x.priority==='urgente')];
   const soon=mine.filter(x=>x.due&&x.due>t&&x.due<=nxt7&&!hoje.includes(x)).sort((a,b)=>a.due.localeCompare(b.due));
   const seg=`<div class="seg">${[['all','Todas'],...db.spaces.map(s=>[s.id,s.name])].map(([id,n])=>`<button class="${fs===id?'on':''}" onclick="ui.homeSpace='${id}';saveUI();render()">${id!=='all'?`<i style="background:${spaceColor(id)}"></i>`:''}${esc(n)}</button>`).join('')}</div>`;
   const stat=(n,l,cls,fn)=>`<a class="kpi ${cls||''}" onclick="${fn}"><b>${n}</b><span>${l}</span></a>`;
