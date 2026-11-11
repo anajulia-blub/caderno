@@ -516,8 +516,8 @@ details.mt-tr summary{cursor:pointer;color:var(--muted);font-size:14px;margin:30
 .calm .box{padding:16px 18px}
 .calm .box.main .row{padding:10px 4px}
 .calm .box.main .grow{font-size:15px}
-.calm .caminho{background:none;border-top:1px solid var(--line);border-radius:0;padding:22px 4px 0;margin:28px 0 0;display:block;max-width:760px}
-.calm .caminho .q{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:16px;color:#4a463f;line-height:1.65}
+.calm .caminho{background:var(--panel);border:1px solid var(--line);border-left:3px solid #161616;border-radius:0;padding:18px 24px;margin:0 0 20px;display:block}
+.calm .caminho .q{font-family:Georgia,"Times New Roman",serif;font-size:17px;color:#24221f;line-height:1.65}
 .calm .caminho .src{margin-top:6px}
 *:has(> .pill.date.late) > .pill.urgente,.sub:has(.late) .pill.urgente{display:none}
 @media (max-width:900px){.hgrid{grid-template-columns:1fr}.kpis{gap:18px}.kpi b{font-size:24px}.kpi.next{border-left:0;padding-left:0;flex-basis:100%}}
@@ -793,6 +793,7 @@ function viewHome(){
       ${stat(waiting.length,'aguardando','',"ui.taskView='board';saveUI();go('#/tasks')")}
       <a class="kpi next" onclick="go('#/agenda')"><span>Próximo na agenda</span><em>${next?next.block.start+' · '+esc(next.title):'nada encaixado'}</em></a>
     </div></div>
+    <div class="caminho" id="caminho"></div>
     <div class="task-add"><input id="quick" placeholder="Anota uma tarefa pra hoje e aperta Enter"></div>
     ${seg}
     <div class="hgrid">
@@ -803,7 +804,6 @@ function viewHome(){
         <section class="box"><h3><span>Reuniões recentes</span></h3>${mts.slice(0,3).map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span class="grow">${esc(m.title)}</span><span class="pill date">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ainda.</div>'}</section>
       </div>
     </div>
-    <div class="caminho" id="caminho"></div>
     </div>`;
 }
 
