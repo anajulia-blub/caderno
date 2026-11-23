@@ -736,6 +736,34 @@ table.tasks td.selc{width:28px}table.tasks tr.sel td{background:#f3efe7}
   .ar-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ar-card{padding:12px}.ar-next{display:none}
   .rt-grid{grid-template-columns:36px repeat(7,92px)}
 }
+/* ===== semana por tarefa ===== */
+.rtw-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 8px}
+.rtw-bar .sp{flex:1}
+.rtw-wk{display:flex;flex-direction:column;min-width:170px}.rtw-wk b{font-size:17px}.rtw-wk span{font-size:12.5px;color:var(--muted)}
+.rtw-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) repeat(2,minmax(0,.62fr));gap:8px;align-items:start}
+.rtw-col{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px;min-height:300px;transition:background .12s,border-color .12s}
+.rtw-col.today{border-color:#161616;box-shadow:0 0 0 1px #161616}
+.rtw-col.past{opacity:.6}
+.rtw-col.over{background:var(--ws-soft,#f3efe7);border-style:dashed}
+.rtw-dh{display:flex;align-items:baseline;gap:6px;padding:4px 6px 8px}
+.rtw-dh span{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.rtw-dh b{font-size:20px;font-weight:600;letter-spacing:-.02em}
+.rtw-dh small{margin-left:auto;font-size:11.5px;background:#f1ede6;border-radius:999px;padding:1px 8px;color:#5d574d}
+.rtw-col.today .rtw-dh small{background:#161616;color:#fff}
+.rtw-hab{display:block;position:relative;overflow:hidden;font-size:11.5px;color:#4f7d5c;background:#eef4ec;border-radius:8px;padding:4px 8px;margin:0 0 8px}
+.rtw-hab span{position:relative;z-index:1}.rtw-hab i{position:absolute;left:0;top:0;bottom:0;background:#d5e6d0}
+.rtw-list{display:flex;flex-direction:column;gap:6px}
+.rtw-t{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-left:3px solid var(--c);border-radius:10px;padding:8px 8px 8px 7px;cursor:grab;transition:box-shadow .12s,transform .12s}
+.rtw-t:hover{box-shadow:0 6px 16px -10px rgba(40,30,10,.4);transform:translateY(-1px)}
+.rtw-t.drag{opacity:.4}
+.rtw-t input{margin:2px 0 0;accent-color:#161616;flex-shrink:0}
+.rtw-tt{font-size:13px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.rtw-tt .u{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin:0 5px 1px 0;vertical-align:middle}
+.rtw-m{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rtw-m b{color:#161616;font-weight:600}.rtw-m em{font-style:normal;color:var(--red)}
+.rtw-t.done{opacity:.5}.rtw-t.done .rtw-tt{text-decoration:line-through}
+.rtw-free{font-size:12.5px;color:#b3ab9e;text-align:center;padding:18px 0}
+@media (max-width:1100px){.rtw-grid{grid-template-columns:repeat(7,200px);overflow-x:auto;padding-bottom:6px}}
 </style>
 </head>
 <body>
@@ -943,7 +971,7 @@ function renderSide(){
   const wsNav=sp=>{const s=space(sp);if(!s)return'';const L=wsLook(sp);const here=h.startsWith('#/w/'+sp)||(sp==='sp_pessoal'&&h==='#/habitos');const open=(ui.wsOpen||{})[sp]??here;const st=wsStats(sp);const tab=h.split('/')[3]||'';
     const sub=(k,ic,l,c)=>`<a class="nav-item ${here&&(tab===k||(k==='habitos'&&h==='#/habitos'))?'active':''}" href="${wsHref(sp,k)}"><span class="e">${ic}</span><span class="lbl">${esc(l)}</span>${c?`<span class="cnt">${c}</span>`:''}</a>`;
     return `<div class="nav-item ws-nav ${here&&(!tab||(sp==='sp_pessoal'&&tab==='hoje'))&&h!=='#/habitos'?'active':''}" onclick="go('${wsHref(sp)}')"><span class="ic"><span class="ws-dot" style="background:${L.color}">${L.mono}</span></span><span class="lbl">${esc(s.name)}</span>${st.late?`<span class="cnt red" title="atrasadas">${st.late}</span>`:''}<button class="add chev ${open?'open':''}" title="Abrir setores" onclick="event.stopPropagation();wsToggle('${sp}')">›</button></div>
-    ${open?`<div class="children">${sp==='sp_pessoal'?sub('habitos','🌱','Hábitos',habLeft()||'')+sub('rotina','🗓️','Rotina'):''}${areasOf(sp).map(a=>sub(a.id,a.icon,a.name)).join('')}</div>`:''}`};
+    ${open?`<div class="children">${sp==='sp_pessoal'?sub('habitos','🌱','Hábitos',habLeft()||'')+sub('rotina','🗓️','Semana'):''}${areasOf(sp).map(a=>sub(a.id,a.icon,a.name)).join('')}</div>`:''}`};
   const pins=db.pages.filter(p=>p.pinned);
   $('#side').innerHTML=`
     <div class="brand"><span class="logo ajg">AJG</span>Central AJG</div>
@@ -1936,7 +1964,7 @@ async function renderCal(){
 /* ============ Central AJG: frentes, setores e projetos ============ */
 const WS_ORDER=['sp_pessoal','sp_ultra','sp_blub','sp_sv'];
 const WS_LOOK={
-  sp_pessoal:{color:'#4f7d5c',soft:'#e6efe3',dot:'#cfe0c9',mono:'P',tag:'Rotina, hábitos, faculdade e vida'},
+  sp_pessoal:{color:'#4f7d5c',soft:'#e6efe3',dot:'#cfe0c9',mono:'P',tag:'Hábitos, semana e faculdade'},
   sp_ultra:{color:'#3f4bb5',soft:'#e9ebfa',dot:'#d3d7f5',mono:'U',tag:'Substituto de refeição premium, pronto pra beber'},
   sp_blub:{color:'#1683c9',soft:'#e3f1fb',dot:'#c4e2f6',mono:'B',tag:'Bebidas saudáveis e 100% naturais'},
   sp_sv:{color:'#a87412',soft:'#f8efd9',dot:'#f1dfae',mono:'SV',tag:'Laticínios São Vicente · marketing, novos negócios e P&D'}};
@@ -1971,7 +1999,7 @@ function migrateCentral(){
   const sp=(id,name,icon)=>{let s=space(id);if(!s){s={id,name,icon};db.spaces.push(s)}s.name=name;s.icon=icon;s.color=WS_LOOK[id].dot;return s};
   sp('sp_pessoal','Pessoal','🌿');sp('sp_ultra','Ultra','⚡');sp('sp_blub','Blub','💧');sp('sp_sv','SV','🧀');
   const A=(id,spaceId,name,icon,kind='setor')=>{if(!area(id))db.areas.push({id,spaceId,name,icon,kind,desc:'',order:db.areas.length})};
-  A('ar_fac','sp_pessoal','Faculdade','🎓');A('ar_fin_p','sp_pessoal','Finanças','💰');A('ar_casa','sp_pessoal','Casa e vida','🏡');
+  A('ar_fac','sp_pessoal','Faculdade','🎓');
   A('ar_u_prod','sp_ultra','Produto e P&D','🧪');A('ar_u_marca','sp_ultra','Marca','🎨');A('ar_u_inv','sp_ultra','BP e investidores','📊');
   A('ar_b_com','sp_blub','Comercial','🤝');A('ar_b_mkt','sp_blub','Marketing e growth','📣');A('ar_b_ops','sp_blub','Operações','📦');A('ar_b_fin','sp_blub','Financeiro','💰');
   A('ar_s_mkt','sp_sv','Marketing','📣');A('ar_s_nn','sp_sv','Novos negócios','🚀');A('ar_s_pd','sp_sv','P&D','🧪');A('ar_s_gest','sp_sv','Gestão e diretoria','🏛️');
@@ -1992,7 +2020,7 @@ function wsStats(sp,aid){const t=today();const ts=db.tasks.filter(x=>x.spaceId==
 const wRow=(x,showArea)=>{const t=today();const a=area(x.areaId);return `<div class="row w-row ${x.status==='done'?'done':''}" onclick="openTask('${x.id}')"><input type="checkbox" ${x.status==='done'?'checked':''} onclick="event.stopPropagation();toggleTask('${x.id}')"><span class="grow">${!isMine(x)?`<b class="who">${esc(x.owner)}</b> `:''}${esc(x.title)}</span><span class="meta-r hide-h">${showArea&&a?`<span class="w-atag">${a.icon} ${esc(a.name)}</span>`:''}${x.status==='doing'?'<span class="w-st doing">fazendo</span>':''}${prioPill(x.priority)}${datePill(x,t)}</span>${x.status!=='done'?quickActs(x.id):''}</div>`};
 
 function wsTabs(sp,tab){
-  const T=sp==='sp_pessoal'?[['hoje','☀️','Hoje'],['habitos','🌱','Hábitos'],['rotina','🗓️','Rotina'],['agenda','📅','Agenda']]:[['','◎','Visão geral']];
+  const T=sp==='sp_pessoal'?[['hoje','☀️','Hoje'],['habitos','🌱','Hábitos'],['rotina','🗓️','Semana'],['agenda','📅','Agenda']]:[['','◎','Visão geral']];
   let html=T.map(([k,ic,l])=>`<a class="ws-tab ${tab===k?'on':''}" href="${k==='agenda'?'#/agenda':wsHref(sp,k)}"><span class="e">${ic}</span>${l}</a>`).join('');
   const as=areasOf(sp);let last=null;
   as.forEach(a=>{if(a.kind!==last){html+=`<span class="ws-div">${a.kind==='projeto'?'Projetos':'Setores'}</span>`;last=a.kind}
@@ -2117,21 +2145,41 @@ async function wsFillDay(){
   if(!$('#ph-day'))return;
   $('#ph-day').innerHTML=all.map(x=>`<div class="pd-row ${x.e<=now?'past':''} ${x.task?'task':''}" ${x.task?`onclick="openTask('${x.task}')"`:''}><span class="pd-t">${x.s}</span><i style="background:${x.task?spaceColor(x.sp):(x.color||'#cfc8bb')}"></i><span class="grow">${x.task?'✅ ':''}${esc(x.l)}</span>${x.cal?`<small>${esc(x.cal)}</small>`:''}</div>`).join('')||`<div class="empty">${gOn()?'Agenda livre hoje.':'Conecte o Google Calendar em Configurações pra ver suas reuniões aqui.'}</div>`;
 }
+function rtDay(x){const t=today();if(x.status!=='done'&&x.due&&x.due<t&&!(x.block&&x.block.date>=t))return t;return x.block?.date||x.due||''}
 function wsRotina(){
-  const st=settings();const H0=5,H1=24,PX=34;const cols=[1,2,3,4,5,6,0];const t=today();const dow=new Date().getDay();
-  const y=hm=>(hm2m(hm)-H0*60)/60*PX;
-  const items=habItems();
-  const winLbl=w=>w.spaces.length?w.spaces.map(s=>space(s)?.name||'').filter(Boolean).join(' + '):'Livre';
-  const col=d=>{const ws=(st.routine||[]).filter(w=>w.days.includes(d));const hs=items.filter(h=>h.time&&(h.days||[]).includes(d)).sort((a,b)=>a.time.localeCompare(b.time));let lastY=-99;const hy=h=>{let v=Math.max(y(h.time),10);if(v<lastY+20)v=lastY+20;lastY=v;return v};
-    return `<div class="rt-col ${d===dow?'today':''}"><div class="rt-dh">${WD[d]}</div><div class="rt-body" style="height:${(H1-H0)*PX}px">
-      ${ws.map(w=>{const L=w.spaces.length===1?wsLook(w.spaces[0]):null;const bg=w.spaces.length>1?`linear-gradient(90deg,${w.spaces.map((s,i)=>wsLook(s).dot+' '+(i*100/w.spaces.length)+'%,'+wsLook(s).dot+' '+((i+1)*100/w.spaces.length)+'%').join(',')})`:(L?L.dot:'#efeae1');
-        return `<div class="rt-win" style="top:${y(w.from)}px;height:${y(w.to)-y(w.from)}px;background:${bg}"><b>${esc(winLbl(w))}</b><span>${w.from}–${w.to}</span></div>`}).join('')}
-      ${hs.map(h=>`<div class="rt-hab" style="top:${hy(h)}px" title="${h.time} · ${esc(h.name)}"><i></i>${esc(h.name)}</div>`).join('')}
-    </div></div>`};
-  const hours=[...Array(H1-H0)].map((_,i)=>`<div style="top:${i*PX}px">${String(H0+i).padStart(2,'0')}h</div>`).join('');
-  return `<div class="ws-sec"><h2>Sua semana ideal</h2><span class="hint">Janelas de trabalho de cada frente e os hábitos com horário. É daqui que o "Encaixar meu dia" da Agenda tira as regras.</span></div>
-    <div class="rt-legend">${db.spaces.map(s=>`<span><i style="background:${wsLook(s.id).dot}"></i>${esc(s.name)}</span>`).join('')}<span><i class="hab"></i>Hábito</span><span class="sp"></span><a class="pillbtn light" href="#/settings">Editar janelas</a><a class="pillbtn light" href="${wsHref('sp_pessoal','habitos')}" onclick="ui.habTab='habitos';saveUI()">Editar hábitos</a></div>
-    <div class="rt-grid"><div class="rt-hours"><div class="rt-dh"></div><div class="rt-hb" style="height:${(H1-H0)*PX}px">${hours}</div></div>${cols.map(col).join('')}</div>`;
+  const t=today();const base=pdate(ui.rtWeek||t);const mon=new Date(base);mon.setDate(base.getDate()-((base.getDay()+6)%7));
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return dstr(d)});
+  const fs=ui.rtSp||'all';const items=habItems();
+  const pool=db.tasks.filter(x=>isMine(x)&&x.tipo!=='Evento'&&!/^\[(juntada|cortada)/.test(x.notes||'')&&(fs==='all'||x.spaceId===fs)&&days.includes(rtDay(x)));
+  const rank=x=>(x.status==='done'?1e6:0)+(x.block?hm2m(x.block.start):2000+(x.priority==='urgente'?0:x.priority==='alta'?1:2)*10);
+  const card=x=>{const a=area(x.areaId),L=wsLook(x.spaceId);const late=x.status!=='done'&&x.due&&x.due<t;
+    return `<div class="rtw-t ${x.status==='done'?'done':''} ${late?'late':''}" draggable="true" data-id="${x.id}" style="--c:${L.color}" onclick="openTask('${x.id}')">
+      <input type="checkbox" ${x.status==='done'?'checked':''} onclick="event.stopPropagation();toggleTask('${x.id}')">
+      <div class="grow"><div class="rtw-tt">${x.priority==='urgente'&&x.status!=='done'?'<i class="u"></i>':''}${esc(x.title)}</div>
+      <div class="rtw-m">${x.block?`<b>${x.block.start}</b> · `:''}${a?`${a.icon} ${esc(a.name)}`:esc(space(x.spaceId)?.name||'')}${late?` · <em>era ${fmtDate(x.due)}</em>`:''}</div></div></div>`};
+  const col=ds=>{const d=pdate(ds);const ts=pool.filter(x=>rtDay(x)===ds).sort((a,b)=>rank(a)-rank(b));const open=ts.filter(x=>x.status!=='done').length;
+    const hs=items.filter(h=>habOn(h,ds));const hd=hs.filter(h=>habDone(h,ds)).length;
+    return `<div class="rtw-col ${ds===t?'today':''} ${ds<t?'past':''}" data-day="${ds}">
+      <div class="rtw-dh"><span>${WD[d.getDay()]}</span><b>${d.getDate()}</b>${open?`<small>${open}</small>`:''}</div>
+      ${hs.length?`<a class="rtw-hab" href="${wsHref('sp_pessoal','habitos')}" onclick="ui.habTab='hoje';ui.habDate='${ds}';saveUI()" title="${esc(hs.map(h=>h.name).join(', '))}"><span>🌱 ${hd}/${hs.length} hábitos</span><i style="width:${hd/hs.length*100}%"></i></a>`:''}
+      <div class="rtw-list">${ts.map(card).join('')||'<div class="rtw-free">Livre</div>'}</div></div>`};
+  const tot=pool.length,dn=pool.filter(x=>x.status==='done').length;
+  const lbl=`${pdate(days[0]).getDate()} a ${pdate(days[6]).toLocaleDateString('pt-BR',{day:'numeric',month:'short'})}`;
+  const seg=`<div class="seg" style="margin:0">${[['all','Todas'],...db.spaces.map(s=>[s.id,s.name])].map(([id,n])=>`<button class="${fs===id?'on':''}" onclick="ui.rtSp='${id}';saveUI();render()">${id!=='all'?`<i style="background:${wsLook(id).color}"></i>`:''}${esc(n)}</button>`).join('')}</div>`;
+  return `<div class="rtw-bar"><button class="iconbtn" onclick="rtShift(-7)">‹</button><div class="rtw-wk"><b>Semana de ${lbl}</b><span>${tot?`${dn} de ${tot} tarefas feitas`:'Nenhuma tarefa com data nesta semana'}</span></div><button class="iconbtn" onclick="rtShift(7)">›</button>${ui.rtWeek&&!days.includes(t)?`<button class="pillbtn light" onclick="ui.rtWeek='';saveUI();render()">Esta semana</button>`:''}<span class="sp"></span>${seg}</div>
+    <div class="hint" style="margin:0 0 12px">Arraste uma tarefa pra outro dia pra mudar o prazo. Atrasadas aparecem no dia de hoje.</div>
+    <div class="rtw-grid">${days.map(col).join('')}</div>`;
+}
+function rtShift(n){const b=pdate(ui.rtWeek||today());b.setDate(b.getDate()+n);ui.rtWeek=dstr(b);saveUI();render()}
+function rtBind(){
+  $$('.rtw-t').forEach(c=>{c.addEventListener('dragstart',e=>{e.dataTransfer.setData('text',c.dataset.id);c.classList.add('drag')});c.addEventListener('dragend',()=>c.classList.remove('drag'))});
+  $$('.rtw-col').forEach(col=>{
+    col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('over')});
+    col.addEventListener('dragleave',e=>{if(!col.contains(e.relatedTarget))col.classList.remove('over')});
+    col.addEventListener('drop',e=>{e.preventDefault();col.classList.remove('over');const x=db.tasks.find(y=>y.id===e.dataTransfer.getData('text'));const ds=col.dataset.day;if(!x||rtDay(x)===ds)return;
+      const old={due:x.due,block:x.block?{...x.block}:null};x.due=ds;if(x.block)setBlock(x,ds,x.block.start,x.block.dur);else save();render();
+      toast('Movida pra '+WD[pdate(ds).getDay()]+' '+fmtDate(ds),()=>{x.due=old.due;if(old.block)setBlock(x,old.block.date,old.block.start,old.block.dur);else save();render()})});
+  });
 }
 function taskArea(id,aid){const t=db.tasks.find(x=>x.id===id);if(!t)return;const a=area(aid);t.areaId=a?a.id:null;t.projectId=a?.pageId||null;if(a)t.spaceId=a.spaceId;save();render();if(a)toast('Movida pra '+a.name)}
 function areaSet(id,k,v){const a=area(id);if(!a||a[k]===v)return;if(k==='name'&&!v)return render();a[k]=v;if(k==='name'&&a.pageId&&page(a.pageId)){page(a.pageId).title=v}save();if(k!=='desc')render()}
@@ -2196,7 +2244,7 @@ function afterRender(r,id){
   }
   if(r==='agenda')renderCal();
   if(r==='w'){const wq=$('#wquick');if(wq)wq.addEventListener('keydown',e=>{if(e.key==='Enter'&&wq.value.trim()){const q=parseQuick(wq.value);if(!q.title)return;const A=area(wq.dataset.area);db.tasks.push({id:uid(),status:'todo',owner:'Juju',spaceId:wq.dataset.sp,areaId:A?A.id:null,projectId:A?.pageId||null,notes:'',createdAt:Date.now(),...q});save();render();const n=$('#wquick');if(n)n.focus();toast('Tarefa criada')}});
-    if($('#ph-day'))wsFillDay();}
+    if($('#ph-day'))wsFillDay();if($('.rtw-grid'))rtBind();}
   if(r==='home'||!r)loadCaminho();
   if(r==='registro'){const ri=$('#regin');ri.focus();ri.addEventListener('keydown',e=>{if(e.key==='Enter'&&ri.value.trim()){db.inbox.push({id:uid(),text:ri.value.trim(),tipo:'',spaceId:'',date:today(),processed:false,createdAt:Date.now()});save();render()}})}
   if(r==='tasks'&&ui.taskView==='board'){
