@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Caderno</title>
+<title>Central AJG</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23111'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='white' font-family='Georgia'>C</text></svg>">
@@ -605,6 +605,39 @@ table.tasks td.selc{width:28px}table.tasks tr.sel td{background:#f3efe7}
 .tr-sub{margin-top:20px;padding-top:14px;border-top:1px solid #f0ece5;gap:18px}
 .lnk{border:0;background:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
 @media (hover:none){.tr-acts kbd{display:none}}
+
+/* Central AJG */
+.nav-sec .spl{display:flex;align-items:center;color:inherit;text-decoration:none;flex:1}
+.nav-sec .spl.on{font-weight:700}
+.nav-sub{margin:8px 12px 2px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);opacity:.75}
+.eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.hubtabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px;border-bottom:1px solid var(--line);padding-bottom:0}
+.hubtabs .tabl{border:0;background:none;padding:8px 12px;font:inherit;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;text-decoration:none;margin-bottom:-1px}
+.hubtabs .tabl.on{color:var(--text);border-bottom-color:var(--text);font-weight:600}
+.hubcard b{font-weight:600}
+.rtgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;margin:16px 0 8px}
+.rtday{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}
+.rtday.now{border-color:var(--text)}
+.rtday h4{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.rtit{border-left:3px solid #ccc;padding:2px 0 2px 8px;margin-bottom:8px;font-size:13px}
+.rtit small{display:block;color:var(--muted);font-size:11px}
+.rtrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.rtd{display:flex;gap:4px;flex-wrap:wrap}
+.dchip{border:1px solid var(--line);background:none;border-radius:999px;padding:2px 9px;font:inherit;font-size:12px;color:var(--muted);cursor:pointer}
+.dchip.on{background:var(--text);color:var(--panel);border-color:var(--text)}
+.rtx{border:0;background:none;color:var(--muted);cursor:pointer;margin-left:auto}
+@media(max-width:900px){.rtgrid{grid-template-columns:1fr}}
+
+/* Central AJG: menu lateral claro */
+#side{background:#f1ece2;color:#2a2823;border:1px solid var(--line)}
+#side .brand{color:#161616}
+.nav-item{color:#3a372f}
+.nav-item:hover{background:#e6dfd2}
+.nav-item.active{background:#e6dfd2;color:#161616;font-weight:600}
+.nav-item .add{color:#857d70}.nav-item .add:hover{background:#d9d1c1}
+.nav-sec,.nav-sub{color:#857d70}.nav-sec button{color:#857d70}.nav-sec button:hover{background:#e6dfd2}
+.nav-item .cnt{background:var(--pink);color:#161616}
+#sync{border-top:1px solid var(--line);color:#857d70}
 </style>
 </head>
 <body>
@@ -632,9 +665,9 @@ function seed(){
     pages:[
       {id:p1,spaceId:blub,parentId:null,type:'project',title:'Lançamento Blub+',icon:'🚀',status:'ativo',updatedAt:Date.now(),
        blocks:[{id:uid(),type:'h2',text:'Objetivo'},{id:uid(),type:'p',text:'Escreva aqui o objetivo do projeto.'},{id:uid(),type:'h2',text:'Links'},{id:uid(),type:'bullet',text:''}]},
-      {id:p2,spaceId:pes,parentId:null,type:'page',title:'Bem-vinda ao Caderno',icon:'👋',updatedAt:Date.now(),
+      {id:p2,spaceId:pes,parentId:null,type:'page',title:'Bem-vinda à Central AJG',icon:'👋',updatedAt:Date.now(),
        blocks:[
-        {id:uid(),type:'p',text:'Este é o seu caderno. Tudo que você escrever aqui é salvo sozinho.'},
+        {id:uid(),type:'p',text:'Esta é a sua Central. Tudo que você escrever aqui é salvo sozinho.'},
         {id:uid(),type:'h2',text:'Atalhos do editor'},
         {id:uid(),type:'bullet',text:'Digite / para abrir o menu de blocos'},
         {id:uid(),type:'bullet',text:'# espaço vira título, ## vira subtítulo'},
@@ -686,7 +719,7 @@ async function pull(){
     if(!content||j.encoding==='none'){ // arquivos > 1MB
       const raw=await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/git/blobs/${j.sha}`,{headers:{Authorization:'Bearer '+cfg.token}}).then(x=>x.json());content=raw.content}
     const remote=JSON.parse(b64dec(content));
-    if(remote&&remote.pages){db=remote;migrate();localStorage.setItem(LS_DATA,JSON.stringify(db))}
+    if(remote&&remote.pages){db=remote;migrate();const seeded=seedSetores();localStorage.setItem(LS_DATA,JSON.stringify(db));if(seeded)save()}
     setSync('ok','Salvo no GitHub'); render();
   }catch(e){console.error(e);setSync('err','Erro: '+e.message)}
 }
@@ -746,11 +779,13 @@ const TIPOS=['Pontual','Projeto','Recorrente','Lembrete','Evento'];
 const prioPill=p=>p==='urgente'?'<span class="pill urgente">urgente</span>':'';
 const fmtDate=d=>{if(!d)return'';const[y,m,dd]=d.split('-');return dd+'/'+m};
 const typeLbl={page:'Página',project:'Projeto',board:'Brainstorm',process:'Processo'};
-const typeIcon={page:'📄',project:'📁',board:'💡',process:'🔁'};
+const typeIcon={page:'📄',project:'📁',board:'💡',process:'🔁',setor:'🧭'};
 
 function newPage(spaceId,type='page',parentId=null){
-  const p={id:uid(),spaceId,parentId,type,title:'',icon:typeIcon[type],updatedAt:Date.now(),blocks:[{id:uid(),type:'p',text:''}]};
-  if(type==='project'){p.status='ativo';p.blocks=[{id:uid(),type:'h2',text:'Objetivo'},{id:uid(),type:'p',text:''},{id:uid(),type:'h2',text:'Notas'},{id:uid(),type:'p',text:''}]}
+  const isS=type==='setor'; if(isS)type='project';
+  const p={id:uid(),spaceId,parentId,type,title:'',icon:isS?'🧭':typeIcon[type],updatedAt:Date.now(),blocks:[{id:uid(),type:'p',text:''}]};
+  if(isS){p.kind='setor';p.status='ativo';p.blocks=setorBlocks()}
+  if(type==='project'&&!isS){p.status='ativo';p.blocks=[{id:uid(),type:'h2',text:'Objetivo'},{id:uid(),type:'p',text:''},{id:uid(),type:'h2',text:'Notas'},{id:uid(),type:'p',text:''}]}
   if(type==='board'){p.cards=[];p.blocks=[]}
   if(type==='process'){p.blocks=[{id:uid(),type:'callout',text:'Quando usar este processo:'},{id:uid(),type:'h2',text:'Passo a passo'},{id:uid(),type:'num',text:''},{id:uid(),type:'h2',text:'Responsável'},{id:uid(),type:'p',text:''}]}
   db.pages.push(p); if(parentId)ui.expanded[parentId]=true; save(); go('#/page/'+p.id,true);
@@ -777,14 +812,16 @@ function render(){
   if(r==='page'&&page(id))html=viewPage(page(id));
   else if(r==='tasks')html=viewTasks();
   else if(r==='meetings')html=viewMeetings();
-  else if(r==='registro')html=viewRegistro();
-  else if(r==='agenda')html=viewAgenda();
+  else if(r==='registro')html=pessoalTabs('registro')+viewRegistro();
+  else if(r==='agenda')html=pessoalTabs('agenda')+viewAgenda();
   else if(r==='meeting'&&db.meetings.find(m=>m.id===id))html=viewMeeting(db.meetings.find(m=>m.id===id));
   else if(r==='settings')html=viewSettings();
-  else if(r==='habitos')html=viewHabits();
+  else if(r==='habitos')html=pessoalTabs('habitos')+viewHabits();
+  else if(r==='rotina')html=pessoalTabs('rotina')+viewRotina();
+  else if(r==='space'&&space(id))html=viewSpace(space(id));
   else if(r==='revisar')html=viewTriage();
   else html=viewHome();
-  const warn=!ghOn()&&r!=='settings'?`<div class="connect-warn"><div><b>Este aparelho ainda não está ligado ao seu Caderno.</b><br>O que aparece aqui são só páginas de exemplo. Suas tarefas e sua agenda estão salvas no GitHub: é só conectar uma vez.</div><button class="pillbtn" onclick="go('#/settings')">Conectar este aparelho</button></div>`:'';
+  const warn=!ghOn()&&r!=='settings'?`<div class="connect-warn"><div><b>Este aparelho ainda não está ligado à sua Central AJG.</b><br>O que aparece aqui são só páginas de exemplo. Suas tarefas e sua agenda estão salvas no GitHub: é só conectar uma vez.</div><button class="pillbtn" onclick="go('#/settings')">Conectar este aparelho</button></div>`:'';
   const same=h===lastHash, keepM=main.scrollTop, keepW=window.scrollY; lastHash=h;
   main.innerHTML=top+warn+html; if(same){main.scrollTop=keepM;window.scrollTo(0,keepW)}else{main.scrollTop=0;window.scrollTo(0,0)}
   $('#side').classList.remove('open');
@@ -802,25 +839,26 @@ function renderSide(){
       <span class="lbl">${esc(p.title||'Sem título')}</span>
       <button class="add" title="Subpágina" onclick="event.stopPropagation();newPage('${spaceId}','page','${p.id}')">+</button></div>
       ${kids&&ui.expanded[p.id]?`<div class="children">${tree(spaceId,p.id)}</div>`:''}`}).join('');
-  const projs=sp=>db.pages.filter(p=>p.spaceId===sp&&p.type==='project'&&p.status!=='arquivado').map(p=>
+  const projs=(sp,kind)=>db.pages.filter(p=>p.spaceId===sp&&p.type==='project'&&p.status!=='arquivado'&&(kind==='setor'?isSetor(p):!isSetor(p))).map(p=>
     `<div class="nav-item ${h==='#/page/'+p.id?'active':''}" onclick="go('#/page/${p.id}')"><span class="ic"><i class="nd"></i></span><span class="lbl">${esc(p.title||'Sem título')}</span>
      <button class="add" title="Subpágina" onclick="event.stopPropagation();newPage('${sp}','page','${p.id}')">+</button></div>
      ${db.pages.some(k=>k.parentId===p.id)?`<div class="children">${tree(sp,p.id)}</div>`:''}`).join('');
   $('#side').innerHTML=`
-    <div class="brand"><span class="logo">C</span>Caderno</div>
+    <div class="brand"><span class="logo">A</span>Central AJG</div>
     <nav>
       <div class="nav-sec" style="margin-top:4px"><span>Geral</span></div>
       ${item('#/home','home','Início')}
-      ${item('#/agenda','cal','Agenda',db.tasks.filter(t=>t.block&&t.block.date===today()&&t.status!=='done').length||'')}
       ${item('#/tasks','tasks','Tarefas')}
       ${item('#/meetings','mic','Reuniões')}
-      ${item('#/habitos','leaf','Hábitos',habLeft()||'')}
-      ${item('#/registro','inbox','Registro do dia',db.inbox.filter(i=>!i.processed).length||'')}
-      ${db.spaces.map(s=>`
-        <div class="nav-sec"><span><span class="sd" style="background:${spaceColor(s.id)}"></span>${esc(s.name)}</span><button title="Nova página, projeto ou brainstorm" onclick="newMenu(event,'${s.id}')">+</button></div>
-        ${projs(s.id)}
-        ${tree(s.id,null)}
-      `).join('')}
+      ${[...db.spaces].sort((a,b)=>spOrder(a.id)-spOrder(b.id)).map(s=>{
+        const pes=spKind(s.id)==='pessoal', emp=spKind(s.id)==='empresa';
+        const setores=projs(s.id,'setor'), projetos=projs(s.id,'projeto');
+        return `
+        <div class="nav-sec"><a class="spl ${h==='#/space/'+s.id?'on':''}" href="#/space/${s.id}"><span class="sd" style="background:${spaceColor(s.id)}"></span>${esc(s.name)}</a><button title="Novo setor, projeto, página ou brainstorm" onclick="newMenu(event,'${s.id}')">+</button></div>
+        ${pes?item('#/habitos','leaf','Hábitos',habLeft()||'')+item('#/rotina','clock','Rotina')+item('#/agenda','cal','Agenda',db.tasks.filter(t=>t.block&&t.block.date===today()&&t.status!=='done').length||'')+item('#/registro','inbox','Registro do dia',db.inbox.filter(i=>!i.processed).length||''):''}
+        ${emp&&setores?`<div class="nav-sub">Setores</div>${setores}`:''}
+        ${emp&&projetos?`<div class="nav-sub">Projetos</div>${projetos}`:(!emp?projetos:'')}
+        ${tree(s.id,null)}`}).join('')}
       <div style="height:12px"></div>
       ${item('#/settings','gear','Configurações')}
     </nav>
@@ -832,6 +870,7 @@ function newMenu(e,spaceId){
   showMenu(e.target.getBoundingClientRect(),[
     {k:I('book','sm'),l:'Página',f:()=>newPage(spaceId,'page')},
     {k:I('target','sm'),l:'Projeto',f:()=>newPage(spaceId,'project')},
+    {k:I('home','sm'),l:'Setor',f:()=>newPage(spaceId,'setor')},
     {k:I('tasks','sm'),l:'Processo',f:()=>newPage(spaceId,'process')},
     {k:I('spark','sm'),l:'Brainstorm',f:()=>newPage(spaceId,'board')}]);
 }
@@ -900,6 +939,116 @@ function viewHome(){
         <section class="box"><h3><span>Reuniões recentes</span></h3>${mts.slice(0,3).map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span class="grow">${esc(m.title)}</span><span class="pill date">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ainda.</div>'}</section>
       </div>
     </div>
+    </div>`;
+}
+
+
+/* ============ Central AJG: hubs por espaço, setores e rotina ============ */
+const isSetor=p=>!!p&&p.type==='project'&&p.kind==='setor';
+const spKind=id=>({sp_blub:'empresa',sp_sv:'empresa',sp_ultra:'empresa',sp_pessoal:'pessoal'})[id]||(space(id)&&space(id).kind)||'outro';
+const spOrder=id=>({sp_pessoal:0,sp_blub:1,sp_sv:2,sp_ultra:3,sp_fac:4})[id]??9;
+const SETORES_PADRAO={
+  sp_blub:['Marketing','Comercial e Trade','Operações e Logística','Financeiro','Produto e P&D'],
+  sp_sv:['Marketing','P&D e Produtos','Novos Negócios'],
+  sp_ultra:['Produto e Formulação','Marca e Marketing','Operação e Produção','Comercial e Canais','Financeiro']};
+const setorBlocks=()=>[
+  {id:uid(),type:'h2',text:'O que este setor faz'},{id:uid(),type:'p',text:''},
+  {id:uid(),type:'h2',text:'Rotinas recorrentes'},{id:uid(),type:'bullet',text:''},
+  {id:uid(),type:'h2',text:'Números que acompanho'},{id:uid(),type:'bullet',text:''},
+  {id:uid(),type:'h2',text:'Agente de IA responsável'},{id:uid(),type:'p',text:''},
+  {id:uid(),type:'h2',text:'Links e acessos'},{id:uid(),type:'bullet',text:''}];
+function seedSetores(){
+  db.flags=db.flags||{};
+  if(db.flags.setores)return false;
+  Object.entries(SETORES_PADRAO).forEach(([sp,names])=>{
+    if(!space(sp))return;
+    names.forEach(n=>{
+      if(db.pages.some(p=>p.spaceId===sp&&isSetor(p)&&p.title===n))return;
+      db.pages.push({id:uid(),spaceId:sp,parentId:null,type:'project',kind:'setor',title:n,icon:'🧭',status:'ativo',updatedAt:Date.now(),blocks:setorBlocks()});
+    });
+  });
+  db.flags.setores=true;
+  return true;
+}
+
+function pessoalTabs(active){
+  const T=[['space','#/space/sp_pessoal','Visão geral'],['habitos','#/habitos','Hábitos'],['rotina','#/rotina','Rotina'],['agenda','#/agenda','Agenda'],['registro','#/registro','Registro do dia']];
+  return `<div class="wrap wide" style="padding-bottom:0"><div class="eyebrow">${esc(space('sp_pessoal')?.icon||'🌿')} Pessoal</div><div class="hubtabs">${T.map(([k,h,l])=>`<a class="tabl ${active===k?'on':''}" href="${h}">${l}</a>`).join('')}</div></div>`;
+}
+
+function setorCard(p){
+  const ts=db.tasks.filter(x=>x.projectId===p.id), ab=ts.filter(x=>x.status!=='done'), t=today();
+  const late=ab.filter(x=>x.due&&x.due<t).length;
+  return `<div class="kid hubcard" onclick="go('#/page/${p.id}')"><span class="ki">${p.icon||'🧭'}</span><span class="grow"><b>${esc(p.title||'Sem título')}</b><small style="display:block">${ab.length} abertas${late?` · <span style="color:var(--red)">${late} atrasadas</span>`:''}</small></span></div>`;
+}
+function hubTaskRow(x,t){
+  return `<div class="row" onclick="openTask('${x.id}')"><input type="checkbox" onclick="event.stopPropagation();toggleTask('${x.id}')"><span class="grow">${esc(x.title)}</span><span class="meta-r hide-h">${prioPill(x.priority)}${datePill(x,t)}</span></div>`;
+}
+
+function viewSpace(sp){
+  const kind=spKind(sp.id), t=today();
+  const tabs=kind==='empresa'
+    ?[['geral','Visão geral'],['setores','Setores'],['projetos','Projetos'],['tarefas','Tarefas'],['reunioes','Reuniões'],['paginas','Páginas']]
+    :kind==='pessoal'?[['geral','Visão geral']]:[['geral','Visão geral'],['tarefas','Tarefas'],['reunioes','Reuniões'],['paginas','Páginas']];
+  ui.spaceTab=ui.spaceTab||{};
+  let tab=ui.spaceTab[sp.id]||'geral'; if(!tabs.some(x=>x[0]===tab))tab='geral';
+  const setores=db.pages.filter(p=>p.spaceId===sp.id&&isSetor(p)&&p.status!=='arquivado');
+  const projetos=db.pages.filter(p=>p.spaceId===sp.id&&p.type==='project'&&!isSetor(p)&&p.status!=='arquivado');
+  const paginas=db.pages.filter(p=>p.spaceId===sp.id&&p.type!=='project'&&!p.parentId);
+  const open=db.tasks.filter(x=>x.spaceId===sp.id&&x.status!=='done').sort(taskSort);
+  const late=open.filter(x=>x.due&&x.due<t), hoje=open.filter(x=>x.due===t);
+  const mts=db.meetings.filter(m=>m.spaceId===sp.id).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const kpi=(n,l,cls)=>`<div class="kpi ${cls||''}" style="cursor:default"><b>${n}</b><span>${l}</span></div>`;
+  let body='';
+  if(tab==='geral'){
+    const urg=[...late,...hoje.filter(x=>!late.includes(x))];
+    const extraPessoal=kind==='pessoal'?`<section class="box"><h3><span>Atalhos</span></h3>${[['habitos','Hábitos'],['rotina','Rotina'],['agenda','Agenda'],['registro','Registro do dia']].map(([k,l])=>`<a class="row" href="#/${k}"><span class="grow">${l}</span></a>`).join('')}</section>`:'';
+    body=`<div class="kpis" style="margin:14px 0 18px">${kpi(open.length,'tarefas abertas')}${late.length?kpi(late.length,late.length>1?'atrasadas':'atrasada','red'):''}${kind==='empresa'?kpi(setores.length,'setores')+kpi(projetos.filter(p=>p.status==='ativo').length,'projetos ativos'):''}${kind==='pessoal'?(habKpi()||''):''}</div>
+    <div class="hgrid"><section class="box main"><h3><span>Pra olhar agora</span><span class="c">${urg.length}</span></h3>${urg.slice(0,10).map(x=>hubTaskRow(x,t)).join('')||'<div class="empty">Nada urgente aqui.</div>'}</section>
+    <div class="hcol">${extraPessoal}${kind==='empresa'?`<section class="box"><h3><span>Setores</span><a class="c" style="cursor:pointer" onclick="ui.spaceTab['${sp.id}']='setores';saveUI();render()">ver todos</a></h3>${setores.map(p=>{const ab=db.tasks.filter(x=>x.projectId===p.id&&x.status!=='done').length;return `<div class="row" onclick="go('#/page/${p.id}')"><span class="grow">${p.icon||'🧭'} ${esc(p.title||'Sem título')}</span><span class="pill">${ab} abertas</span></div>`}).join('')||'<div class="empty">Nenhum setor ainda.</div>'}</section>`:''}
+    ${kind==='pessoal'?'':`<section class="box"><h3><span>Reuniões recentes</span></h3>${mts.slice(0,3).map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span class="grow">${esc(m.title)}</span><span class="pill date">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ainda.</div>'}</section>`}</div></div>${kind==='pessoal'?`<h2 class="sec"><span class="h3l">${I('book')} Páginas</span></h2><div class="kids">${paginas.map(k=>`<div class="kid" onclick="go('#/page/${k.id}')"><span class="ki">${k.icon||'📄'}</span><span>${esc(k.title||'Sem título')}</span><small>${typeLbl[k.type]}</small></div>`).join('')}<div class="kid add" onclick="newPage('${sp.id}','page')">${I('plus')}<span>Nova página</span></div></div>`:''}`;
+  } else if(tab==='setores'){
+    body=`<div class="kids" style="margin-top:14px">${setores.map(setorCard).join('')}<div class="kid add" onclick="newPage('${sp.id}','setor')">${I('plus')}<span>Novo setor</span></div></div>`;
+  } else if(tab==='projetos'){
+    body=`<div class="kids" style="margin-top:14px">${projetos.map(p=>{const ts=db.tasks.filter(x=>x.projectId===p.id),d=ts.filter(x=>x.status==='done').length,pct=ts.length?Math.round(d/ts.length*100):0;return `<div class="kid hubcard" onclick="go('#/page/${p.id}')"><span class="ki">${p.icon||'📁'}</span><span class="grow"><b>${esc(p.title||'Sem título')}</b><small style="display:block">${pct}% · ${ts.length-d} abertas · ${esc(p.status||'')}</small></span></div>`}).join('')}<div class="kid add" onclick="newPage('${sp.id}','project')">${I('plus')}<span>Novo projeto</span></div></div>`;
+  } else if(tab==='tarefas'){
+    body=`<div style="margin-top:14px">${taskTable(open)}</div>`;
+  } else if(tab==='reunioes'){
+    body=`<div style="margin-top:14px">${mts.map(m=>`<div class="row" onclick="go('#/meeting/${m.id}')"><span class="grow">${esc(m.title)}</span><span class="pill date">${fmtDate(m.date)}</span></div>`).join('')||'<div class="empty">Nenhuma reunião ligada a este espaço.</div>'}</div>`;
+  } else if(tab==='paginas'){
+    body=`<div class="kids" style="margin-top:14px">${paginas.map(k=>`<div class="kid" onclick="go('#/page/${k.id}')"><span class="ki">${k.icon||'📄'}</span><span>${esc(k.title||'Sem título')}</span><small>${typeLbl[k.type]}</small></div>`).join('')}<div class="kid add" onclick="newPage('${sp.id}','page')">${I('plus')}<span>Nova página</span></div></div>`;
+  }
+  const head=kind==='pessoal'?pessoalTabs('space'):'';
+  const tabbar=`<div class="hubtabs">${tabs.map(([k,l])=>`<button class="tabl ${tab===k?'on':''}" onclick="ui.spaceTab['${sp.id}']='${k}';saveUI();render()">${l}</button>`).join('')}</div>`;
+  return `${head}<div class="wrap wide calm">${kind==='pessoal'?'':`<div class="hhead"><div><div class="eyebrow">${kind==='empresa'?'Empresa':'Espaço'}</div><h1 class="title" style="margin:0">${esc(sp.icon||'')} ${esc(sp.name)}</h1></div></div>`}${kind==='empresa'||kind==='outro'?tabbar:''}${body}</div>`;
+}
+
+/* ---- rotina (semana inteira: trabalho, vida e hábitos) ---- */
+function rtItems(dow){
+  const st=settings(), out=[];
+  st.routine.filter(w=>w.days.includes(dow)).forEach(w=>out.push({from:w.from,to:w.to,kind:'trab',title:w.spaces.length?w.spaces.map(id=>space(id)?.name||'').join(' + '):'Trabalho livre',color:w.spaces[0]?spaceColor(w.spaces[0]):'#9a9488'}));
+  st.lifeRoutine.filter(w=>w.days.includes(dow)).forEach(w=>out.push({from:w.from,to:w.to,kind:'vida',title:(w.icon?w.icon+' ':'')+w.title,color:'#c9a9d6'}));
+  habItems().filter(h=>(h.days||[]).includes(dow)&&h.time).forEach(h=>out.push({from:h.time,to:'',kind:'hab',title:h.name,color:'#8fbf9a'}));
+  return out.sort((a,b)=>a.from.localeCompare(b.from));
+}
+function rtDays(arr,i){return [1,2,3,4,5,6,0].map(d=>`<button class="dchip ${arr[i].days.includes(d)?'on':''}" onclick="rtDay('${arr===settings().routine?'routine':'lifeRoutine'}',${i},${d})">${WD[d]}</button>`).join('')}
+function rtDay(k,i,d){const w=settings()[k][i];w.days=w.days.includes(d)?w.days.filter(x=>x!==d):[...w.days,d];save();render()}
+function rtAdd(k){const st=settings();if(k==='routine')st.routine.push({days:[1,2,3,4,5],from:'09:00',to:'10:00',spaces:[]});else st.lifeRoutine.push({id:uid(),title:'Novo bloco',icon:'',days:[1,2,3,4,5],from:'12:00',to:'13:00'});save();render()}
+function rtDel(k,i){const st=settings();st[k].splice(i,1);save();render()}
+function viewRotina(){
+  const st=settings(), todayDow=new Date().getDay();
+  const grid=`<div class="rtgrid">${[1,2,3,4,5,6,0].map(d=>`<div class="rtday ${d===todayDow?'now':''}"><h4>${WD[d]}</h4>${rtItems(d).map(x=>`<div class="rtit" style="border-left-color:${x.color}"><small>${x.from}${x.to?' a '+x.to:''}</small><span>${esc(x.title)}</span></div>`).join('')||'<div class="empty" style="padding:8px 0">livre</div>'}</div>`).join('')}</div>`;
+  const wrow=(w,i)=>`<div class="rtrow"><div class="rtd">${rtDays(st.routine,i)}</div><input type="time" value="${w.from}" onchange="settings().routine[${i}].from=this.value;save();render()"> até <input type="time" value="${w.to}" onchange="settings().routine[${i}].to=this.value;save();render()"><select onchange="settings().routine[${i}].spaces=this.value?[this.value]:[];save();render()"><option value="">Trabalho livre</option>${db.spaces.map(s=>`<option value="${s.id}" ${w.spaces[0]===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select><button class="rtx" title="Apagar" onclick="rtDel('routine',${i})">✕</button></div>`;
+  const lrow=(w,i)=>`<div class="rtrow"><div class="rtd">${rtDays(st.lifeRoutine,i)}</div><input type="time" value="${w.from}" onchange="settings().lifeRoutine[${i}].from=this.value;save();render()"> até <input type="time" value="${w.to}" onchange="settings().lifeRoutine[${i}].to=this.value;save();render()"><input value="${esc(w.icon||'')}" style="width:46px;text-align:center" onchange="settings().lifeRoutine[${i}].icon=this.value;save();render()"><input value="${esc(w.title)}" style="flex:1;min-width:140px" onchange="settings().lifeRoutine[${i}].title=this.value;save();render()"><button class="rtx" title="Apagar" onclick="rtDel('lifeRoutine',${i})">✕</button></div>`;
+  return `<div class="wrap wide calm"><h1 class="title">Rotina</h1>
+    <div class="meta">Sua semana de relance: janelas de trabalho, vida fora do trabalho e hábitos com horário.</div>
+    ${grid}
+    <h2 class="sec"><span class="h3l">${I('clock')} Janelas de trabalho</span></h2>
+    <div class="meta" style="margin-bottom:8px">É aqui que a Central encaixa as tarefas sozinha, na agenda.</div>
+    ${st.routine.map(wrow).join('')}<button class="btn" style="margin-top:8px" onclick="rtAdd('routine')">+ Janela de trabalho</button>
+    <h2 class="sec"><span class="h3l">${I('leaf')} Minha vida (faculdade, treino, refeições...)</span></h2>
+    <div class="meta" style="margin-bottom:8px">Blocos que não são trabalho. Aparecem na grade acima e não entram no encaixe de tarefas.</div>
+    ${st.lifeRoutine.map(lrow).join('')}<button class="btn" style="margin-top:8px" onclick="rtAdd('lifeRoutine')">+ Bloco de vida</button>
     </div>`;
 }
 
@@ -997,7 +1146,7 @@ function habPrompt(wk){const t=today();const z=habAdd(wk,6);const R=H().reviews[
   const L=[`Jaque, revisão dos meus hábitos da semana de ${f(wk)} a ${f(z)}.`,'','Como foi:'];
   habItems().forEach(h=>{const c=habCount(h,wk,z<t?z:t);const m=habMonth(h,t);L.push(`- ${h.name}${h.time?' ('+h.time+')':''}: ${c.d} de ${c.s} na semana, ${m.done} de ${m.target} no mês, ${habStLbl[m.st]}${habStreak(h)>1?', '+habStreak(h)+' dias seguidos':''}.`)});
   L.push('','O que funcionou: '+(R.ok||'').trim(),'O que travou: '+(R.stuck||'').trim(),'O que quero cortar ou mudar: '+(R.change||'').trim(),'',
-    'Olhando minha agenda da semana que vem, me ajuda a ajustar: o que muda de dia ou horário, o que vale cortar e qual hábito priorizar. Se quiser, já atualiza no Caderno.');
+    'Olhando minha agenda da semana que vem, me ajuda a ajustar: o que muda de dia ou horário, o que vale cortar e qual hábito priorizar. Se quiser, já atualiza na Central AJG.');
   return L.join('\n')}
 
 /* ============ registro do dia ============ */
@@ -1054,7 +1203,7 @@ function viewPage(p){
     <div class="phead"><span class="page-icon" title="Trocar ícone" onclick="pickIcon('${p.id}',this)">${p.icon||'📄'}</span>
     <h1 class="title" contenteditable="true" data-ph="Sem título" id="ptitle">${esc(p.title)}</h1></div>
     <div class="props">
-      <span class="prop"><small>Tipo</small><b>${typeLbl[p.type]}</b></span>
+      <span class="prop"><small>Tipo</small><b>${isSetor(p)?'Setor':typeLbl[p.type]}</b></span>
       <label class="prop"><small>Frente</small><select onchange="movePage('${p.id}',this.value)">${db.spaces.map(s=>`<option value="${s.id}" ${s.id===p.spaceId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></label>
       ${p.type==='project'?`<label class="prop"><small>Status</small><select onchange="page('${p.id}').status=this.value;save();renderSide()">${['ativo','pausado','concluído','arquivado'].map(s=>`<option ${p.status===s?'selected':''}>${s}</option>`).join('')}</select></label>`:''}
       <span class="prop"><small>Editado</small><b>${new Date(p.updatedAt||Date.now()).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</b></span>
@@ -1509,7 +1658,7 @@ function viewSettings(){
     <h1 class="title">Configurações</h1>
     <h2 class="sec">Sincronizar com o GitHub</h2>
     ${ghOn()?'':'<div class="connect-warn" style="margin:0 0 14px"><div><b>Falta só colar o seu token</b> no campo abaixo e clicar em Conectar. Usuário e repositório já estão preenchidos.</div></div>'}
-    <div class="note">Seus dados ficam num arquivo <b>data.json</b> no seu repositório privado. Assim o caderno é o mesmo no computador e no celular, e cada alteração fica no histórico do GitHub. O token fica salvo só neste navegador; em cada aparelho novo, cole de novo.</div>
+    <div class="note">Seus dados ficam num arquivo <b>data.json</b> no seu repositório privado. Assim a Central é a mesma no computador e no celular, e cada alteração fica no histórico do GitHub. O token fica salvo só neste navegador; em cada aparelho novo, cole de novo.</div>
     <label>Seu usuário no GitHub</label><input id="cowner" value="${esc(cfg.owner||'anajulia-blub')}">
     <label>Repositório dos dados</label><input id="crepo" value="${esc(cfg.repo||'caderno-dados')}">
     <label>Token</label><input id="ctoken" type="password" value="${esc(cfg.token||'')}" placeholder="github_pat_...">
@@ -1606,6 +1755,7 @@ const AG_H0=7,AG_H1=23,AG_PX=60;
 const WD=['dom','seg','ter','qua','qui','sex','sáb'];
 function settings(){db.settings=db.settings||{};const s=db.settings;
   if(db.spaces.find(x=>x.icon==='🫧'))db.spaces.forEach(x=>{if(x.icon==='🫧')x.icon='💧'});s.routine=s.routine||[{days:[1,2,3,4,5],from:'09:00',to:'13:00',spaces:['sp_sv','sp_ultra']},{days:[1,2,3,4,5],from:'14:00',to:'17:00',spaces:['sp_blub']},{days:[0,6],from:'10:00',to:'12:00',spaces:[]}];
+  s.lifeRoutine=s.lifeRoutine||[{id:uid(),title:'Faculdade (nos dias de aula)',icon:'🎓',days:[1,2,3,4,5],from:'17:30',to:'22:00'}];
   if(s.gcalPush===undefined)s.gcalPush=true;return s}
 const defDur=t=>t.estimate||(t.tipo==='Projeto'?60:t.tipo==='Lembrete'?15:30);
 
